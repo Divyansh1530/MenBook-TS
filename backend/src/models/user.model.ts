@@ -21,7 +21,7 @@ interface UserMethods {
 interface User {
     name:string;
     email:string;
-    password:string;
+    password?:string;
     avatar?:string;
     timezone:string;
     role:"user" | "mentor" | "admin";
@@ -48,7 +48,7 @@ const userSchema = new Schema<User,mongoose.Model<User>, UserMethods>({
     },
     password:{
         type:String,
-        required:true
+        required:false
     },
     avatar:{
         type:String,
@@ -110,13 +110,13 @@ const userSchema = new Schema<User,mongoose.Model<User>, UserMethods>({
 userSchema.pre("save", async function () {
     if (!this.isModified("password")) return
 
-    this.password = await bcrypt.hash(this.password, 10)
+    this.password! = await bcrypt.hash(this.password!, 10)
 })      
 
 userSchema.methods.isPasswordCorrect = async function(password: string): Promise<boolean> {
         return await bcrypt.compare(
             password,
-            this.password
+            this.password!
         )
     }
 
