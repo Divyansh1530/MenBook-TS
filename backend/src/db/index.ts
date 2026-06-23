@@ -12,9 +12,9 @@ const connectDB = async():Promise<void> => {
     } catch (error:unknown) {
         if (error instanceof Error) {
             console.log("MongoDB connection failed",error.message)
+            process.exit(1)
         }
     }
-    process.exit(1)
 }
 
 export default connectDB

@@ -1,0 +1,158 @@
+import { asyncHandler } from "../utils/asyncHandler.js";
+import { ApiError } from "../utils/ApiError.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import mongoose from "mongoose";
+import {User} from '../models/user.model.js' 
+
+
+type TokenResponse = {
+    refreshToken:string;
+    accessToken:string;
+}
+
+const generateAccessAndRefreshTokens = async(userId:string):Promise<TokenResponse> => {
+    try {
+    const user = await User.findById(userId)
+    if (!user) {
+        throw new ApiError(404, "User not Found")
+    }
+    const accessToken = user.generateAccessToken()
+    const refreshToken = user.generateRefreshToken()
+    user.refreshToken = refreshToken
+    await user.save({
+        validateBeforeSave:false
+    })
+    return {
+        accessToken,
+        refreshToken
+    }
+    } catch (error : unknown) {
+        console.log(error)
+
+        if (error instanceof Error) {
+            throw new ApiError(500,error.message)
+        }
+    }
+    throw new ApiError(500,"Failed to generate tokens")
+
+}
+
+type Role = "user" | "mentor"
+
+interface RegisterUserBody {
+    name:string;
+    email:string;
+    password:string;
+    role?:Role;
+    title?:string;
+    bio?:string;
+    expertise?:string;
+    pricing?:string;
+}
+
+type UserData = {
+    name:string;
+    email:string;
+    password:string;
+    role:Role;
+    avatar:string;
+
+    mentorProfile?:{
+        title:string;
+        bio:string;
+        expertise:string[];
+        pricing:number
+    }
+}
+
+const registerUser = asyncHandler(async(req,res) => {
+    const { name , email , password , role , title , bio , expertise , pricing } = req.body as RegisterUserBody
+
+    if (
+        [email, name, password].some((field) => field?.trim() === "")
+    ) {
+        throw new ApiError(400, "All fields are required")
+    }
+
+    const allowedRoles = ["user", "mentor"]
+
+    if (role && !allowedRoles.includes(role)) {
+        throw new ApiError(400, "Invalid role")
+    }
+
+    const existedUser = await User.findOne({
+        email 
+    })
+
+    if (existedUser) {
+        throw new ApiError(409, "User with email or name already exists")
+    }
+
+    const avatarLocalPath = req.file?.path;
+
+    const avatar = await uploadOnCloudinary(avatarLocalPath || "" )
+
+    const userData:UserData = {
+        name ,
+        avatar: avatar?.url || "",
+        email: email.toLowerCase(),
+        password,
+        role: role || "user"
+    }
+    
+    if (role === "mentor") {
+        if (
+            !title ||
+            !bio ||
+            !expertise ||
+            !pricing
+        ) {
+            throw new ApiError(400,"All mentor fields are required")
+        }
+        
+        let parsedExpertise:string[] = []
+        
+        try {
+            if (expertise) {
+                parsedExpertise = JSON.parse(expertise)
+            }
+        } catch (error) {
+            throw new ApiError(400,"Invalid expertise format")
+        }
+        
+        const parsedPricing = Number(pricing)
+    
+            if (isNaN(parsedPricing) || parsedPricing < 0) {
+                throw new ApiError(400, "Invalid pricing")
+            }
+            
+        
+        userData.mentorProfile = {
+            title,
+            bio,
+            expertise: parsedExpertise,
+            pricing:parsedPricing
+        }
+    }
+
+    const user = await User.create(userData)
+    
+    const createdUser = await User.findById(user._id).select(
+        "-password -refreshToken"
+    )
+
+    if (!createdUser) {
+        throw new ApiError(500, "Something went wrong while registering the user")
+    }
+
+    return res
+    .status(201)
+    .json(
+        new ApiResponse(201, createdUser, "User registered Successfully")
+    )
+
+
+})
+
+export {registerUser}
