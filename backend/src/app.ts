@@ -18,10 +18,12 @@ app.use(cookieParser())
 import userRouter from './routes/user.routes.js'
 import availabilityRouter from './routes/availability.routes.js'
 import bookingRouter from './routes/booking.routes.js'
+import paymentRouter from './routes/payment.routes.js'
 
 //routes declaration
 app.use("/api/v1/users",userRouter)
 app.use("/api/v1/availability",availabilityRouter)
 app.use("/api/v1/booking",bookingRouter)
+app.use("/api/v1/payment",paymentRouter)
 
 export {app}
