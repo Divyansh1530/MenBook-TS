@@ -5,8 +5,8 @@ interface Availability {
     startTime:number;
     endTime:number;
     isBlocked?:boolean;
-    bufferTime?:number;
-    slotDuration?:number;
+    bufferTime:number;
+    slotDuration:number;
     dayOfWeek:number;
     createdAt?:Date;
     updatedAt?:Date;

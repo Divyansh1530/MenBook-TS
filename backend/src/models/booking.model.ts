@@ -16,6 +16,7 @@ interface Booking {
     cancelReason?:string | null;
     expiresAt?:Date
     reminderSent?:boolean
+    bookingDate:Date
     createdAt?:Date
     updatedAt?:Date
 }
@@ -48,6 +49,10 @@ const bookingSchema = new Schema<Booking>({
         type:String,
         enum:["pending","paid","cancelled"],
         default:"pending"
+    },
+    bookingDate: {
+        type: Date,
+        required: true
     },
     amount:{
         type:Number,
