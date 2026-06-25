@@ -7,8 +7,8 @@ type PaymentStatus = "pending" | "paid" | "cancelled"
 interface Booking {
     userId:mongoose.Types.ObjectId;
     mentorId:mongoose.Types.ObjectId;
-    startTime:number;
-    endTime:number;
+    startTime:Date;
+    endTime:Date;
     status?:BookingStatus;
     paymentStatus?:PaymentStatus;
     amount:number;
@@ -33,11 +33,11 @@ const bookingSchema = new Schema<Booking>({
         required:true
     },
     startTime:{
-        type:Number,
+        type:Date,
         required:true
     },
     endTime:{
-        type:Number,
+        type:Date,
         required:true
     },
     status:{
