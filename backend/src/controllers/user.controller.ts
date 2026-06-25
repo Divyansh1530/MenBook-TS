@@ -4,6 +4,8 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import mongoose from "mongoose";
 import {User} from '../models/user.model.js' 
+import jwt from "jsonwebtoken"
+import type { CookieOptions } from "express";
 
 
 type TokenResponse = {
@@ -75,7 +77,7 @@ const registerUser = asyncHandler(async(req,res) => {
         throw new ApiError(400, "All fields are required")
     }
 
-    const allowedRoles = ["user", "mentor"]
+    const allowedRoles:Role[] = ["user", "mentor"]
 
     if (role && !allowedRoles.includes(role)) {
         throw new ApiError(400, "Invalid role")
@@ -186,7 +188,7 @@ const loginUser = asyncHandler(async(req,res) => {
 
     const loggedInUser = await User.findById(user._id).select("-password -refreshToken")
 
-    const options = {
+    const options:CookieOptions = {
         httpOnly: true,
         secure: true
     }
@@ -219,7 +221,7 @@ const logoutUser = asyncHandler(async(req,res) => {
         }
     )
 
-    const options = {
+    const options:CookieOptions = {
         httpOnly: true,
         secure: true
     }
@@ -232,8 +234,106 @@ const logoutUser = asyncHandler(async(req,res) => {
 
 })
 
+interface RefreshTokenBody {
+    refreshToken?:string;
+}
+
+interface JwtPayload {
+    _id:string;
+}
+
+const refreshAccessToken = asyncHandler(async(req,res) => {
+    const {refreshToken} = req.body as RefreshTokenBody
+
+    if (!refreshToken) {
+        throw new ApiError(401, "Unauthorized request")
+    }
+
+    try {
+        const decodedToken = jwt.verify(
+            refreshToken,
+            process.env.REFRESH_TOKEN_SECRET!
+        ) as JwtPayload
+    
+        const user = await User.findById(decodedToken?._id)
+    
+        if (!user) {
+            throw new ApiError(401, "Invalid refresh token")
+        }
+    
+        if (refreshToken !== user?.refreshToken) {
+            throw new ApiError(401, "Refresh token is expired or used")
+            
+        }
+    
+        const options:CookieOptions = {
+            httpOnly: true,
+            secure: true
+        }
+    
+        const {accessToken, refreshToken : newRefreshToken} = await generateAccessAndRefreshTokens(user._id.toString())
+    
+        return res
+        .status(200)
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", newRefreshToken, options)
+        .json(
+            new ApiResponse(
+                200, 
+                {accessToken, refreshToken: newRefreshToken},
+                "Access token refreshed"
+            )
+        )
+    } catch (error:unknown) {
+        if (error instanceof Error) {
+            throw new ApiError(401, error?.message || "Invalid refresh token")
+        }
+    }
+
+})
+
+const googleAuthCallback =asyncHandler(async (req, res) => {
+
+        const user = req.user
+
+        const accessToken = user.generateAccessToken()
+
+        const refreshToken = user.generateRefreshToken()
+
+        user.refreshToken = refreshToken
+
+        await user.save({
+            validateBeforeSave: false
+        })
+
+        const options:CookieOptions = {
+            httpOnly: true,
+            secure: false,
+            sameSite: "lax"
+        }
+
+        const redirect =
+             user.oauthRedirect ||
+        (
+            user.role === "mentor" &&
+            !user.isProfileComplete
+            ? "/mentor-onboarding"
+            : "/"
+        )
+
+        return res
+        .cookie("accessToken",accessToken, options)
+        .cookie("refreshToken",refreshToken,options)
+        .redirect(
+            `http://localhost:5173${redirect}`
+        )
+  
+})
+
 export {
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    refreshAccessToken,
+    googleAuthCallback
 }

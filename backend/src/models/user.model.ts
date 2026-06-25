@@ -10,6 +10,9 @@ interface MentorProfile {
     pricing?:number;
     avgRating?:number;
     totalReviews?:number;
+    experience?:string;
+    linkedin?:string;
+    portfolio?:string;
 }
 
 interface UserMethods {
@@ -87,6 +90,15 @@ const userSchema = new Schema<User,mongoose.Model<User>, UserMethods>({
         totalReviews:{
             type:Number,
             default:0
+        },
+        experience:{
+            type:String
+        },
+        linkedin:{
+            type:String
+        },
+        portfolio:{
+            type:String
         }
 
     },
