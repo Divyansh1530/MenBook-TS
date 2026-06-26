@@ -2,6 +2,7 @@ import mongoose, {Schema} from "mongoose";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import type { SignOptions } from 'jsonwebtoken'
+import type { HydratedDocument } from "mongoose";
 
 interface MentorProfile {
     title?:string;
@@ -159,4 +160,6 @@ userSchema.methods.generateRefreshToken = function():string{
     )
     
 }
+export type UserDocument = HydratedDocument<User, UserMethods>
+
 export const User = mongoose.model("User",userSchema)
