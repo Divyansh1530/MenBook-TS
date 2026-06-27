@@ -1,7 +1,7 @@
 import { ApiError } from "../utils/ApiError.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken"
-import {User} from '../models/user.model.js'
+import { User, type UserDocument } from "../models/user.model.js";
 
 interface JwtPayload {
     _id:string;
@@ -23,7 +23,7 @@ export const verifyJWT = asyncHandler(async(req,res,next) => {
             throw new ApiError(401, "Invalid Access Token")
         }
     
-        req.user = user;
+        req.user = user as UserDocument;
         next()
     } catch (error:unknown) {
         if (error instanceof Error) {
@@ -31,13 +31,3 @@ export const verifyJWT = asyncHandler(async(req,res,next) => {
         }
     }
 })
-
-declare global {
-    namespace Express {
-        interface Request {
-            user?: any
-        }
-    }
-}
-
-export {}

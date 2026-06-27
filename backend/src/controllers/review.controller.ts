@@ -55,9 +55,9 @@ const createReview = asyncHandler(async(req,res) => {
 
     const {mentorId , bookingId , rating , comment} = req.body as CreateReviewBody
 
-    const userId = req.user._id.toString()
+    const userId = req.user!._id.toString()
 
-    if (req.user.role !== "user") {
+    if (req.user!.role !== "user") {
         throw new ApiError(403,"Only Users can create reviews")
     }
 
@@ -182,7 +182,7 @@ const updateReview = asyncHandler(async(req,res) => {
         throw new ApiError(404,"Review not found")
     }
 
-    if (review.userId.toString() !== req.user._id.toString()) {
+    if (review.userId.toString() !== req.user!._id.toString()) {
         throw new ApiError(403,"Unauthorized")
     }
 
@@ -226,7 +226,7 @@ const deleteReview = asyncHandler(async(req,res) => {
         throw new ApiError(404,"Review Not Found")
     }
 
-    if (review.userId.toString() !== req.user._id.toString()) {
+    if (review.userId.toString() !== req.user!._id.toString()) {
         throw new ApiError(403,"Unauthorized")
     }
 

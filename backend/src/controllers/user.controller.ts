@@ -2,11 +2,10 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
-import mongoose from "mongoose";
 import {User} from '../models/user.model.js' 
 import jwt from "jsonwebtoken"
 import type { CookieOptions } from "express";
-
+import type { UserDocument } from "../models/user.model.js";
 
 type TokenResponse = {
     refreshToken:string;
@@ -210,7 +209,7 @@ const loginUser = asyncHandler(async(req,res) => {
 
 const logoutUser = asyncHandler(async(req,res) => {
     await User.findByIdAndUpdate(
-        req.user._id,
+    req.user!._id,
         {
             $unset: {
                 refreshToken: 1 // this removes the field from document
@@ -292,17 +291,21 @@ const refreshAccessToken = asyncHandler(async(req,res) => {
 
 })
 
+type UserDocumentWithRedirect = UserDocument & {
+    oauthRedirect?: string;
+};
+
 const googleAuthCallback =asyncHandler(async (req, res) => {
 
-        const user = req.user
+        const user = req.user as UserDocumentWithRedirect
 
-        const accessToken = user.generateAccessToken()
+        const accessToken = user!.generateAccessToken()
 
-        const refreshToken = user.generateRefreshToken()
+        const refreshToken = user!.generateRefreshToken()
 
-        user.refreshToken = refreshToken
+        user!.refreshToken = refreshToken
 
-        await user.save({
+        await user!.save({
             validateBeforeSave: false
         })
 
@@ -312,11 +315,10 @@ const googleAuthCallback =asyncHandler(async (req, res) => {
             sameSite: "lax"
         }
 
-        const redirect =
-             user.oauthRedirect ||
+        const redirect = user!.oauthRedirect ||
         (
-            user.role === "mentor" &&
-            !user.isProfileComplete
+            user!.role === "mentor" &&
+            !user!.isProfileComplete
             ? "/mentor-onboarding"
             : "/"
         )
