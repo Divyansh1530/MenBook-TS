@@ -19,3 +19,7 @@ export interface Mentor {
 export interface MentorPageProps {
   user: User | null;
 }
+
+export interface MentorAvailabilityProps {
+  user: User | null;
+}

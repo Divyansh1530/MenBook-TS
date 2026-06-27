@@ -9,6 +9,7 @@ import Home from "./pages/Home"
 import Footer from "./components/Footer"
 import BrowseMentors from "./pages/BrowseMentors"
 import Mentor from "./pages/Mentors"
+import MentorAvailability from "./pages/MentorAvailability"
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/browse-mentors" element={<BrowseMentors />} />
           <Route path="/mentors/:id" element={<Mentor user={user} />} />
+          <Route path="/mentor-availability" element={<MentorAvailability user={user} />} />
           <Route path="/signup" element={<Signup />}/>
           <Route path="/login" element={<Login setUser={setUser} />}/>
         </Routes>
