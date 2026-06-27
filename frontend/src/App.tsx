@@ -6,6 +6,9 @@ import type { User } from "./types/user"
 import { useState } from "react"
 import Login from "./pages/Login"
 import Home from "./pages/Home"
+import Footer from "./components/Footer"
+import BrowseMentors from "./pages/BrowseMentors"
+import Mentor from "./pages/Mentors"
 
 
 function App() {
@@ -18,9 +21,12 @@ function App() {
         <NavBar user={user} setUser={setUser} />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/browse-mentors" element={<BrowseMentors />} />
+          <Route path="/mentors/:id" element={<Mentor user={user} />} />
           <Route path="/signup" element={<Signup />}/>
           <Route path="/login" element={<Login setUser={setUser} />}/>
         </Routes>
+        <Footer />
       </div>
     </BrowserRouter>
   )

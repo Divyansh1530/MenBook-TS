@@ -1,9 +1,12 @@
+import type {User} from './user'
+
 export interface MentorProfile {
   title: string;
   bio: string;
   expertise: string[];
   pricing: number;
   avgRating: number;
+  experience:string;
 }
 
 export interface Mentor {
@@ -11,4 +14,8 @@ export interface Mentor {
   name: string;
   avatar: string;
   mentorProfile?: MentorProfile;
+}
+
+export interface MentorPageProps {
+  user: User | null;
 }

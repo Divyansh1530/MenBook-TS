@@ -1,0 +1,296 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Star, X, ArrowLeft } from 'lucide-react';
+import type { MentorPageProps } from '../types/mentor';
+import type { Mentor } from '../types/mentor';
+import type { Review } from '../types/review';
+import type { Slot } from '../types/availability';
+
+function Mentors({
+  user
+}:MentorPageProps) {
+
+  const { id } = useParams<{id:string}>();
+  const navigate = useNavigate();
+
+  const [mentor, setMentor] = useState<Mentor | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Modal and Slot states
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  const [slots, setSlots] = useState<Slot[]>([]);
+  const [dateRange, setDateRange] = useState<Date[]>([]);
+  const [processingPayment, setProcessingPayment] = useState(false)
+
+  useEffect(() => {
+
+    const dates = [];
+    for (let i = 0; i < 7; i++) {
+      const d = new Date();
+      d.setDate(d.getDate() + i);
+      dates.push(d);
+    }
+    setDateRange(dates);
+  }, []);
+
+  const fetchMentor = async () => {
+    try {
+      const response = await axios.get<{data:Mentor}>(`http://localhost:8000/api/v1/users/mentors/${id}`);
+      setMentor(response.data.data);
+    } catch (error) { console.log(error); }
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const response = await axios.get<{data:Review[]}>(`http://localhost:8000/api/v1/review/mentors/${id}`);
+      setReviews(response.data.data);
+    } catch (error) { console.log(error); }
+  };
+
+  const fetchSlots = async (date:string) => {
+    try {
+      const response = await axios.get<{data:Slot[]}>(
+        `http://localhost:8000/api/v1/availability/slots/${id}?date=${date}`,
+        { withCredentials: true }
+      );
+       const currentTime = new Date()
+
+    const filteredSlots =
+      response.data.data.filter((slot:Slot) => {
+
+        return (
+          new Date(slot.startTimeISO)
+          > currentTime
+        )
+      })
+      setSlots(filteredSlots);
+    } catch (error) 
+    { 
+      console.log(error)
+   }
+  };
+
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      await Promise.all([fetchMentor(), fetchReviews()]);
+      setLoading(false);
+    };
+    loadData();
+  }, [id]);
+
+  const handleDateSelect = (date:Date) => {
+    const formatted = date.toISOString().split('T')[0];
+    setSelectedDate(formatted);
+    setSelectedSlot(null);
+    fetchSlots(formatted);
+  };
+
+  const handleBookSession = async () => {
+    if (!user) { navigate('/login'); return }
+    if (!selectedSlot) return alert("Please select a time slot");
+
+    try {
+      const bookingResponse = await axios.post(
+        'http://localhost:8000/api/v1/booking/create',
+        { mentorId: id, startTime: selectedSlot.startTimeISO, endTime: selectedSlot.endTimeISO },
+        { withCredentials: true }
+      );
+
+      const { order } = (await axios.post(
+        'http://localhost:8000/api/v1.1/payment/create-order',
+        { bookingId: bookingResponse.data.data._id },
+        { withCredentials: true }
+      )).data.data;
+
+        interface RazorpaySuccessResponse {
+            razorpay_payment_id: string;
+            razorpay_order_id: string;
+            razorpay_signature: string;
+        }
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: 'MenBook',
+        order_id: order.id,
+        handler: async function (res:RazorpaySuccessResponse) {
+            try {
+
+              setProcessingPayment(true)
+
+              await axios.post(
+                'http://localhost:8000/api/v1.1/payment/verify-payment',
+                {
+                  razorpay_order_id: res.razorpay_order_id,
+                  razorpay_payment_id: res.razorpay_payment_id,
+                  razorpay_signature: res.razorpay_signature
+                },
+                { withCredentials: true }
+              )
+
+              setShowBookingModal(false)
+
+              alert('Payment successful')
+
+            } catch (error) {
+
+              alert('Payment verification failed')
+
+            } finally {
+
+              setProcessingPayment(false)
+            }
+          },
+        theme: { color: '#e94e36' }
+      };
+      new window.Razorpay(options).open();
+    } catch (error) { alert('Booking failed'); }
+  };
+
+  if (loading) return <div className="min-h-screen bg-[#fdfaf3] flex items-center justify-center font-serif text-2xl text-gray-400">Loading...</div>;
+
+  return (
+    <section className="min-h-screen bg-[#fdfaf3] py-24 px-6 relative">
+      <div className="max-w-4xl mx-auto">
+
+        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-400 hover:text-black mb-12 transition-colors">
+          <ArrowLeft size={18} /> Back to mentors
+        </button>
+
+        <div className="flex flex-col md:flex-row gap-12 items-start mb-20">
+          <div className="w-48 h-48 rounded-[40px] bg-orange-100 shrink-0 overflow-hidden border-4 border-white shadow-sm">
+            <img src={mentor!.avatar} alt={mentor!.name} className="w-full h-full object-cover" />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-4 mb-4">
+              <h1 className="font-serif text-5xl text-[#1a1a1a]">{mentor!.name}</h1>
+              <div className="flex items-center gap-1 text-sm font-bold bg-white px-3 py-1 rounded-full border border-black/5">
+                <Star size={14} className="fill-red-500 text-red-500" />
+                {mentor!.mentorProfile?.avgRating || "5.0"}
+              </div>
+            </div>
+            <p className="text-xl text-gray-500 font-sans mb-8 leading-relaxed max-w-2xl">
+              {mentor!.mentorProfile?.bio}
+            </p>
+            <button 
+              onClick={() => { setShowBookingModal(true); fetchSlots(selectedDate); }}
+              className="bg-[#120f0a] text-white px-10 py-4 rounded-full font-medium hover:bg-black transition-all shadow-xl active:scale-95"
+            >
+              Book a session • ₹{mentor!.mentorProfile?.pricing}
+            </button>
+          </div>
+        </div>
+
+        <div className="border-t border-black/5 pt-16">
+          <h2 className="font-serif text-3xl mb-10">Community feedback</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {reviews.map((r) => (
+              <div key={r._id} className="bg-white/40 border border-black/5 rounded-4xl p-8">
+                <div className="flex items-center gap-1 mb-4">
+                  {[...Array(r.rating)].map((_, i) => <Star key={i} size={14} className="fill-red-500 text-red-500" />)}
+                </div>
+                <p className="text-gray-600 mb-6 italic">"{r.comment}"</p>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gray-100" />
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{r.userId?.name}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+
+        {showBookingModal && (
+          <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 backdrop-blur-md px-4 animate-in fade-in duration-300">
+
+            <div className="absolute inset-0" onClick={() => setShowBookingModal(false)} />
+
+            <div className="relative bg-white w-full max-w-125 rounded-[40px] p-10 shadow-2xl scale-in-center">
+              <button onClick={() => setShowBookingModal(false)} className="absolute top-8 right-8 text-gray-400 hover:text-black transition-colors">
+                <X size={24} />
+              </button>
+
+              <header className="mb-8">
+                <p className="text-[10px] font-bold tracking-[0.2em] text-gray-400 uppercase mb-2">BOOK A SESSION WITH</p>
+                <h2 className="font-serif text-4xl text-[#1a1a1a] mb-1">{mentor!.name}</h2>
+                <p className="text-gray-500 font-sans">{mentor!.mentorProfile?.experience || 'Expert'}</p>
+              </header>
+
+              <div className="mb-8">
+                <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-4">PICK A DAY</p>
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                  {dateRange.map((date, i) => {
+                    const isSelected = date.toISOString().split('T')[0] === selectedDate;
+                    return (
+                      <button key={i} onClick={() => handleDateSelect(date)} className={`flex flex-col items-center min-w-15 py-4 rounded-2xl border transition-all ${isSelected ? 'bg-[#e94e36] border-[#e94e36] text-white shadow-lg shadow-red-200' : 'bg-white border-black/5 text-gray-500 hover:bg-gray-50'}`}>
+                        <span className="text-[10px] uppercase mb-1 font-bold">{date.toLocaleDateString('en-US', { weekday: 'short' })}</span>
+                        <span className="font-serif text-xl">{date.getDate()}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="mb-10">
+                <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-4">PICK A TIME</p>
+                <div className="grid grid-cols-3 gap-3">
+                  {slots.length > 0 ? slots.map((slot, i) => (
+                    <button key={i} onClick={() => setSelectedSlot(slot)} className={`py-3 rounded-2xl border text-sm font-medium transition-all ${selectedSlot === slot ? 'bg-[#e94e36] border-[#e94e36] text-white' : 'bg-white border-black/5 text-gray-700 hover:border-black/20'}`}>
+                     {new Date(slot.startTimeISO).toLocaleTimeString([], {
+                      hour: 'numeric',
+                      minute: '2-digit'
+                    })}
+                    -
+                    {new Date(slot.endTimeISO).toLocaleTimeString([], {
+                      hour: 'numeric',
+                      minute: '2-digit'
+                    })}
+                  </button>
+                  )) : <div className="col-span-3 text-center py-6 text-gray-400 italic text-sm">No slots available.</div>}
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-8 border-t border-black/5">
+                <div>
+                  <span className="font-serif text-3xl text-[#1a1a1a]">₹{mentor!.mentorProfile?.pricing}</span>
+                  <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">60-min session</p>
+                </div>
+                <button onClick={handleBookSession} className="bg-[#120f0a] text-white px-8 py-4 rounded-full font-medium hover:bg-black transition-all active:scale-95">
+                  {user ? 'Book now' : 'Log in to book'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+        {processingPayment && (
+          <div className="fixed inset-0 z-200 bg-[#fdfaf3] flex flex-col items-center justify-center">
+
+            <div className="w-16 h-16 border-4 border-black/10 border-t-black rounded-full animate-spin mb-8" />
+
+            <h2 className="font-serif text-3xl text-[#1a1a1a] mb-3">
+              Confirming your booking
+            </h2>
+
+            <p className="text-gray-500 text-sm">
+              Please wait while we verify your payment.
+            </p>
+
+          </div>
+        )}
+
+        </div>
+      
+    </section>
+    
+  );
+}
+
+
+
+export default Mentors;

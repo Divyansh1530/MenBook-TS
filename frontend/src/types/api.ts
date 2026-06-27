@@ -5,3 +5,10 @@ export interface MentorsResponse {
     mentors: Mentor[];
   };
 }
+
+export interface BrowseMentorsResponse {
+  data: {
+    mentors: Mentor[];
+    totalPages: number;
+  };
+}
