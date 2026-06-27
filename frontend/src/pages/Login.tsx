@@ -1,0 +1,118 @@
+import { useState , type ChangeEvent , type FormEvent } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import api from '../api/axios'
+import type { User } from '../types/user';
+import { AxiosError } from 'axios';
+
+interface LoginProps {
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+}
+
+interface LoginFormData {
+    email:string;
+    password:string;
+}
+
+function Login({
+  setUser
+}:LoginProps) {
+  const navigate = useNavigate()
+  const [role] = useState<"user" | "mentor">('user') // State for User/Mentor toggle
+  const [formData, setFormData] = useState<LoginFormData>({
+    email: '',
+    password: ''
+  })
+  const [loading, setLoading] = useState(false)
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    try {
+      setLoading(true)
+      const response = await api.post(
+        '/users/login',
+        { ...formData, role }, // Including role in request if your backend needs it
+        { withCredentials: true }
+      )
+      setUser(response.data.data.user)
+      navigate("/")
+    } catch (error) {
+      const err = error as AxiosError<{message:string}>
+      alert(err.response?.data?.message || 'Login failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-[#fdfaf3] flex flex-col items-center justify-center pb-15 md:pt-5 p-6">
+      <div className="w-full max-w-md">
+        
+        <div className="mb-10">
+          <h1 className="hero-heading font-serif text-4xl text-[#1a1a1a] mb-3 tracking-tight transform scale-y-[1.4] origin-left">
+            Welcome back.
+          </h1>
+          <p className="text-gray-600 font-sans">
+            Log in to manage your sessions.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block text-[10px] font-normal tracking-[0.15em] text-black/50 uppercase mb-2">
+              EMAIL
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full bg-white/40 border border-black/10 rounded-2xl px-5 py-4 outline-none focus:border-black/30 transition-all font-sans"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-[10px] font-normal tracking-[0.15em] text-black/50 uppercase mb-2">
+              PASSWORD
+            </label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full bg-white/40 border border-black/10 rounded-2xl px-5 py-4 outline-none focus:border-black/30 transition-all font-sans"
+              required
+            />
+          </div>
+          <a 
+          href="http://localhost:8000/api/v1/users/auth/google/login"
+          className="w-full flex justify-center items-center gap-3 border-black/10 py-3 rounded-2xl"
+          >
+          Continue With Google
+          </a>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-[#120f0a] text-white py-2 rounded-full font-medium text-lg hover:bg-black transition-all active:scale-[0.98] mt-4"
+          >
+            {loading ? 'Logging in...' : 'Log in'}
+          </button>
+        </form>
+
+        <p className="text-center text-gray-600 mt-8 font-sans">
+          New here? <Link to="/signup" className="text-black font-semibold border-b border-black">Create an account</Link>
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export default Login

@@ -120,7 +120,7 @@ function Signup() {
             type="button"
             onClick={() => {
               window.location.href =
-                `http://localhost:8000/api/v1.1/users/auth/google/signup?role=${formData.role}`
+                `http://localhost:8000/api/v1/users/auth/google/signup?role=${formData.role}`
             }}
             className="w-full border border-black/10 py-3 rounded-full font-medium mt-4 hover:bg-white transition-all"
           >
