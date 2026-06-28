@@ -10,6 +10,8 @@ import Footer from "./components/Footer"
 import BrowseMentors from "./pages/BrowseMentors"
 import Mentor from "./pages/Mentors"
 import MentorAvailability from "./pages/MentorAvailability"
+import Profile from "./pages/Profile"
+import Dashboard from "./pages/Dashboard"
 
 
 function App() {
@@ -25,6 +27,8 @@ function App() {
           <Route path="/browse-mentors" element={<BrowseMentors />} />
           <Route path="/mentors/:id" element={<Mentor user={user} />} />
           <Route path="/mentor-availability" element={<MentorAvailability user={user} />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/dashboard" element={<Dashboard user={user} />} />
           <Route path="/signup" element={<Signup />}/>
           <Route path="/login" element={<Login setUser={setUser} />}/>
         </Routes>

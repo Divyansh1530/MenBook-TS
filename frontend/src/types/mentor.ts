@@ -4,9 +4,11 @@ export interface MentorProfile {
   title: string;
   bio: string;
   expertise: string[];
-  pricing: number;
+  pricing: string;
   avgRating: number;
   experience:string;
+  linkedin:string;
+  portfolio:string;
 }
 
 export interface Mentor {

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Star, X, ArrowLeft } from 'lucide-react';
 import type { MentorPageProps } from '../types/mentor';
 import type { Mentor } from '../types/mentor';
 import type { Review } from '../types/review';
 import type { Slot } from '../types/availability';
+import api from '../api/axios';
 
 function Mentors({
   user
@@ -39,22 +39,22 @@ function Mentors({
 
   const fetchMentor = async () => {
     try {
-      const response = await axios.get<{data:Mentor}>(`http://localhost:8000/api/v1/users/mentors/${id}`);
+      const response = await api.get<{data:Mentor}>(`/users/mentors/${id}`);
       setMentor(response.data.data);
     } catch (error) { console.log(error); }
   };
 
   const fetchReviews = async () => {
     try {
-      const response = await axios.get<{data:Review[]}>(`http://localhost:8000/api/v1/review/mentors/${id}`);
+      const response = await api.get<{data:Review[]}>(`/review/mentors/${id}`);
       setReviews(response.data.data);
     } catch (error) { console.log(error); }
   };
 
   const fetchSlots = async (date:string) => {
     try {
-      const response = await axios.get<{data:Slot[]}>(
-        `http://localhost:8000/api/v1/availability/slots/${id}?date=${date}`,
+      const response = await api.get<{data:Slot[]}>(
+        `/availability/slots/${id}?date=${date}`,
         { withCredentials: true }
       );
        const currentTime = new Date()
@@ -95,14 +95,14 @@ function Mentors({
     if (!selectedSlot) return alert("Please select a time slot");
 
     try {
-      const bookingResponse = await axios.post(
-        'http://localhost:8000/api/v1/booking/create',
+      const bookingResponse = await api.post(
+        '/booking/create',
         { mentorId: id, startTime: selectedSlot.startTimeISO, endTime: selectedSlot.endTimeISO },
         { withCredentials: true }
       );
 
-      const { order } = (await axios.post(
-        'http://localhost:8000/api/v1.1/payment/create-order',
+      const { order } = (await api.post(
+        '/payment/create-order',
         { bookingId: bookingResponse.data.data._id },
         { withCredentials: true }
       )).data.data;
@@ -124,8 +124,8 @@ function Mentors({
 
               setProcessingPayment(true)
 
-              await axios.post(
-                'http://localhost:8000/api/v1.1/payment/verify-payment',
+              await api.post(
+                '/payment/verify-payment',
                 {
                   razorpay_order_id: res.razorpay_order_id,
                   razorpay_payment_id: res.razorpay_payment_id,

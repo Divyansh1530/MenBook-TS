@@ -1,9 +1,10 @@
-import { useEffect, useState type ChangeEvent } from 'react'
-import axios, {AxiosError} from 'axios'
+import { useEffect, useState,  type ChangeEvent } from 'react'
+import {AxiosError} from 'axios'
 import { Plus, Clock, Trash2 } from 'lucide-react'
 import { Navigate } from 'react-router-dom'
 import type { MentorAvailabilityProps } from '../types/mentor'
 import type { Availability, AvailabilityForm } from '../types/availability'
+import api from '../api/axios'
 
 function MentorAvailability({
   user
@@ -27,7 +28,7 @@ function MentorAvailability({
 
   const fetchAvailability = async () => {
     try {
-      const response = await axios.get<{data:Availability[]}>('http://localhost:8000/api/v1/availability/mentor', {
+      const response = await api.get<{data:Availability[]}>('/availability/mentor', {
         withCredentials: true
       })
       setAvailability(response.data.data)
@@ -70,7 +71,7 @@ function MentorAvailability({
         slotDuration: Number(formData.slotDuration),
         bufferTime: Number(formData.bufferTime)
       }
-      await axios.post('http://localhost:8000/api/v1/availability/create', payload, {
+      await api.post('/availability/create', payload, {
         withCredentials: true
       })
       alert('Availability created successfully')
@@ -83,7 +84,7 @@ function MentorAvailability({
   
   const handleDeleteAvailability = async (id:string) => {
     try {
-      await axios.delete(`http://localhost:8000/api/v1/availability/${id}`, {
+      await api.delete(`/availability/${id}`, {
         withCredentials: true
       })
       fetchAvailability()
