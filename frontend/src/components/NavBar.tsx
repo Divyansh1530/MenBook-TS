@@ -90,14 +90,20 @@ function NavBar({
                 onClick={() => setProfileOpen(!profileOpen)}
                 className="flex items-center gap-3 pl-1 pr-4 py-1 bg-white/50 border border-black/5 rounded-full hover:bg-white transition-all shadow-sm"
               >
-                <div >
-                  <img 
-                  src={user.avatar} 
-                  alt={user.name}
-                  className="w-8 h-8 rounded-full flex items-center justify-center"
-                  />
+                  <div className="w-8 h-8 rounded-full overflow-hidden bg-red-100 flex items-center justify-center">
+                    {user.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt={user.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-red-500 text-sm font-serif">
+                        {user.name[0].toUpperCase()}
+                      </span>
+                    )}
+                  </div>
                   
-                </div>
                 <span className="text-sm font-medium text-gray-800">{user.name}</span>
               </button>
 
@@ -167,10 +173,22 @@ function NavBar({
         <div className="md:hidden bg-[#fdfaf3] border-t border-black/5 p-6 space-y-4 pb-10">
           {user && (
             <div className="flex items-center gap-3 mb-6 p-4 bg-white/40 rounded-3xl border border-black/5">
-               <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-500 font-serif">{user.name[0]}</div>
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-red-100 flex items-center justify-center">
+                  {user.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-red-500 font-serif">
+                      {user.name[0].toUpperCase()}
+                    </span>
+                  )}
+                </div>
                <div>
                   <p className="font-bold text-[#1a1a1a]">{user.name}</p>
-                  <p className="text-xs text-gray-400 uppercase tracking-widest">{user.role}</p>
+                  <p className="text-[10px] font-bold px-6 py-1 bg-red-50 text-red-400 rounded-md uppercase tracking-wider">{user.role}</p>
                </div>
             </div>
           )}
@@ -186,6 +204,7 @@ function NavBar({
           onClick={() => setMenuOpen(false)}>
             Browse Mentors
           </Link>
+          {!user &&
           <div className='flex gap-5'>
           <Link
           to="/login"
@@ -202,7 +221,7 @@ function NavBar({
            Signup
           </Link>
           </div>
-          
+        }
           {user && (
             <>
 

@@ -106,7 +106,7 @@ const createBooking = asyncHandler(async(req,res) => {
         amount:mentor.mentorProfile.pricing,
         status:"pending",
         paymentStatus:"pending",
-        expiresAt:new Date(Date.now() + 30 * 1000)
+        expiresAt:new Date(Date.now() + 10 * 60 * 1000)
     })
 
     return res

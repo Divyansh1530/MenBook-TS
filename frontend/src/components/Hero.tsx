@@ -32,9 +32,7 @@ function Hero() {
 }, [])
 
   return (
-    <section className="relative min-h-screen bg-[#fdfaf3] pt-5 md:pt-25 pb-24 px-6 md:px-12 lg:px-24 flex items-center overflow-hidden">
-      
-      
+    <section className="relative min-h-[85vh] lg:min-h-screen bg-[#fdfaf3] pt-5 md:pt-25 pb-24 px-6 md:px-12 lg:px-24 flex items-center overflow-hidden">
       <div 
         className="absolute inset-0 z-0 opacity-[0.4]"
         style={{

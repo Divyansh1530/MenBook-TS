@@ -156,23 +156,23 @@ function Mentors({
   if (loading) return <div className="min-h-screen bg-[#fdfaf3] flex items-center justify-center font-serif text-2xl text-gray-400">Loading...</div>;
 
   return (
-    <section className="min-h-screen bg-[#fdfaf3] py-24 px-6 relative">
+    <section className="min-h-screen bg-[#fdfaf3] md:py-24 py-16 px-6 relative">
       <div className="max-w-4xl mx-auto">
 
         <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-400 hover:text-black mb-12 transition-colors">
           <ArrowLeft size={18} /> Back to mentors
         </button>
 
-        <div className="flex flex-col md:flex-row gap-12 items-start mb-20">
-          <div className="w-48 h-48 rounded-[40px] bg-orange-100 shrink-0 overflow-hidden border-4 border-white shadow-sm">
+        <div className="flex flex-col md:flex-row md:gap-12 gap-8 items-start mb-20">
+          <div className="md:w-48 md:h-48 w-35 h-35 rounded-[40px] bg-orange-100 shrink-0 overflow-hidden border-4 border-white shadow-sm">
             <img src={mentor!.avatar} alt={mentor!.name} className="w-full h-full object-cover" />
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-4">
-              <h1 className="font-serif text-5xl text-[#1a1a1a]">{mentor!.name}</h1>
+              <h1 className="font-serif md:text-5xl text-4xl text-[#1a1a1a]">{mentor!.name}</h1>
               <div className="flex items-center gap-1 text-sm font-bold bg-white px-3 py-1 rounded-full border border-black/5">
                 <Star size={14} className="fill-red-500 text-red-500" />
-                {mentor!.mentorProfile?.avgRating || "5.0"}
+                {mentor!.mentorProfile?.avgRating || "New"}
               </div>
             </div>
             <p className="text-xl text-gray-500 font-sans mb-8 leading-relaxed max-w-2xl">
@@ -207,7 +207,7 @@ function Mentors({
 
 
         {showBookingModal && (
-          <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 backdrop-blur-md px-4 animate-in fade-in duration-300">
+          <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 backdrop-blur-md px-4 md:pt-50 pb-30 animate-in fade-in duration-300">
 
             <div className="absolute inset-0" onClick={() => setShowBookingModal(false)} />
 
