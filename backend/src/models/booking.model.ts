@@ -14,7 +14,7 @@ interface Booking {
     amount:number;
     meetingLink?:string | null;
     cancelReason?:string | null;
-    expiresAt?:Date
+    expiresAt?:Date | null;
     reminderSent?:boolean
     bookingDate:Date
     createdAt?:Date
@@ -67,7 +67,8 @@ const bookingSchema = new Schema<Booking>({
         default:null
     },
     expiresAt:{
-        type:Date
+        type:Date,
+        default:null
     },
     reminderSent:{
         type:Boolean,

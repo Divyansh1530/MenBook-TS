@@ -13,7 +13,7 @@ const createOrder = asyncHandler(async(req,res) => {
 
     const bookingId = req.body.bookingId as string
 
-    const userId = req.user._id.toString()
+    const userId = req.user!._id.toString()
 
     if (!mongoose.Types.ObjectId.isValid(bookingId)) {
         throw new ApiError(400,"Invalid Booking Id")
@@ -117,6 +117,8 @@ const verifyPayment = asyncHandler(async(req,res) => {
     }
 
     booking.status = "confirmed"
+
+    booking.expiresAt = null
 
     booking.paymentStatus = "paid"
 
@@ -303,6 +305,7 @@ const razorpayWebhook = asyncHandler(async(req,res) => {
         if (booking) {
             booking.status = "confirmed"
             booking.paymentStatus = "paid"
+            booking.expiresAt=null
             
             await booking.save()
         }

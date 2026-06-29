@@ -16,9 +16,9 @@ const createBooking = asyncHandler(async(req,res) => {
 
     const {mentorId , startTime , endTime } = req.body as BookingBody
 
-    const userId = req.user._id.toString()
+    const userId = req.user!._id.toString()
 
-    if (req.user.role !== "user") {
+    if (req.user!.role !== "user") {
         throw new ApiError(403,"Only Users can create bookings")
     }
 
@@ -57,26 +57,38 @@ const createBooking = asyncHandler(async(req,res) => {
         throw new ApiError(400,"Start Time must be less than End Time")
     }
 
+    await Booking.updateMany(
+        {
+            status: "pending",
+            expiresAt: { $lte: new Date() }
+        },
+        {
+            $set: {
+            status: "cancelled",
+            expiresAt: null
+            }
+        }
+        );
+
     const existingBooking = await Booking.findOne({
         mentorId,
-        startTime:{
-            $lt:parsedStartTime
-        },
-        endTime:{
-            $gt:parsedEndTime
-        },
-        status:{
-            $ne:"cancelled"
-        }
+        startTime:parsedStartTime,
+        $or:[
+            {
+                status:"confirmed"
+            },
+            {
+                status:"pending",
+                expiresAt:{
+                    $gt:new Date()
+                }
+            }
+        ]
     })
 
     if (existingBooking) {
         throw new ApiError(409,"Slot is already Booked")
     }
-
-    const expiresAt = new Date(
-        Date.now() + 10 * 60 * 1000
-    )
     
     if (!mentor.mentorProfile?.pricing) {
         throw new ApiError(400,"Mentor pricing not found")
@@ -94,7 +106,7 @@ const createBooking = asyncHandler(async(req,res) => {
         amount:mentor.mentorProfile.pricing,
         status:"pending",
         paymentStatus:"pending",
-        expiresAt
+        expiresAt:new Date(Date.now() + 30 * 1000)
     })
 
     return res
@@ -107,7 +119,7 @@ const createBooking = asyncHandler(async(req,res) => {
 
 const getUserBookings = asyncHandler(async(req,res) => {
 
-    const userId = req.user._id.toString()
+    const userId = req.user!._id.toString()
 
     const bookings = await Booking.find({
         userId
@@ -144,11 +156,11 @@ const getUserBookings = asyncHandler(async(req,res) => {
 
 const getMentorBookings = asyncHandler(async(req,res) => {
 
-    if (req.user.role !== "mentor") {
+    if (req.user!.role !== "mentor") {
         throw new ApiError(403,"Only Mentors can access Mentor Bookings")
     }
 
-    const mentorId = req.user._id.toString()
+    const mentorId = req.user!._id.toString()
 
     const bookings = await Booking.find({
         mentorId
@@ -181,8 +193,8 @@ const cancelBooking = asyncHandler(async(req,res) => {
         throw new ApiError(404,"Booking Not Found")
     }
 
-    const isUserOwner = booking.mentorId.toString() == req.user._id.toString()
-    const isMentorOwner = booking.userId.toString() == req.user._id.toString()
+    const isUserOwner = booking.mentorId.toString() == req.user!._id.toString()
+    const isMentorOwner = booking.userId.toString() == req.user!._id.toString()
 
     if (!isUserOwner && !isMentorOwner) {
         throw new ApiError(403,"You are not allowed to cancel this booking")
@@ -198,6 +210,7 @@ const cancelBooking = asyncHandler(async(req,res) => {
         booking.cancelReason = cancelReason
     }
     booking.status = "cancelled"
+    booking.expiresAt = null
 
     await booking.save()
 
@@ -218,11 +231,12 @@ const markBookingComplete = asyncHandler(async(req,res) => {
         throw new ApiError(404,"Booking not found")
     }
 
-    if (booking.mentorId.toString() !== req.user._id.toString()) {
+    if (booking.mentorId.toString() !== req.user!._id.toString()) {
         throw new ApiError(403,"Unauthorized")
     }
 
     booking.status = "completed"
+    booking.expiresAt = null
 
     await booking.save()
 
