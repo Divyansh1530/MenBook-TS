@@ -18,7 +18,6 @@ import type { PasswordForm, ProfileForm } from '../types/profile';
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-//   const [avatar, setAvatar] = useState<File | null>(null);
   const [formData, setFormData] = useState<ProfileForm>({
     name: '',
     bio: '',

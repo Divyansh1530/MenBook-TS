@@ -19,9 +19,9 @@ const createAvailabilty = asyncHandler(async (req, res) => {
 
     const {dayOfWeek , startTime , endTime , slotDuration , bufferTime = 0} = req.body as AvailabilityBody
 
-    const mentorId = req.user._id.toString()
+    const mentorId = req.user!._id.toString()
 
-    if (req.user.role !== "mentor") {
+    if (req.user!.role !== "mentor") {
         throw new ApiError(403,"Only mentors can create availability")
     }
 
@@ -153,7 +153,7 @@ const updateAvailability = asyncHandler(async(req,res)=> {
         throw new ApiError(400,"Availability Not Found")
     }
 
-    if (availability.mentorId.toString() !== req.user._id.toString()) {
+    if (availability.mentorId.toString() !== req.user!._id.toString()) {
         throw new ApiError(403,"You are not allowed to update the availability")
     }
 
@@ -219,7 +219,7 @@ const deleteAvailability = asyncHandler(async(req,res) =>{
         throw new ApiError(400,"Availability Not Found")
     }
 
-    if (availability.mentorId.toString() !== req.user._id.toString()) {
+    if (availability.mentorId.toString() !== req.user!._id.toString()) {
         throw new ApiError(403,"You are not allowed to update the availability")
     }
 
@@ -344,9 +344,9 @@ const getAvailableSlots = asyncHandler(async(req,res) => {
 })
 
 const getCurrentMentorAvailability = asyncHandler(async(req,res)=>{
-
+    
    const availability = await Availability.find({
-      mentorId: req.user._id
+      mentorId: req.user!._id
    })
 
    return res

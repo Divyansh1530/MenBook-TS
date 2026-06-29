@@ -6,7 +6,8 @@ export interface User {
   email: string;
   role: "user" | "mentor";
   avatar: string;
-  mentorProfile?:MentorProfile
+  mentorProfile?:MentorProfile;
+  isProfileComplete?:boolean
 }
 
 export interface NavBarProps {
@@ -16,4 +17,9 @@ export interface NavBarProps {
 
 export interface UserDashboardProps {
   user:User | null;
+}
+
+export interface UserProps {
+  user: User | null;
+  setUser: React.Dispatch<React.SetStateAction<User | null>>;
 }

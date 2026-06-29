@@ -5,10 +5,10 @@ import { createAvailabilty, deleteAvailability, getAvailableSlots, getCurrentMen
 const router = Router()
 
 router.route("/create").post(verifyJWT,createAvailabilty)
+router.route("/mentor").get(verifyJWT,getCurrentMentorAvailability)
 router.route("/:mentorId").get(getMentorAvailability)
 router.route("/:availabilityId").patch(verifyJWT,updateAvailability)
 router.route("/:availabilityId").delete(verifyJWT,deleteAvailability)
 router.route("/slots/:mentorId").get(verifyJWT,getAvailableSlots)
-router.route("/mentor").get(verifyJWT,getCurrentMentorAvailability)
 
 export default router

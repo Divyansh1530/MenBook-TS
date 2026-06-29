@@ -1,6 +1,6 @@
 import { useEffect, useState,  type ChangeEvent } from 'react'
 import {AxiosError} from 'axios'
-import { Plus, Clock, Trash2 } from 'lucide-react'
+import { Plus, Clock, Trash2, Pencil } from 'lucide-react'
 import { Navigate } from 'react-router-dom'
 import type { MentorAvailabilityProps } from '../types/mentor'
 import type { Availability, AvailabilityForm } from '../types/availability'
@@ -17,6 +17,7 @@ function MentorAvailability({
     slotDuration: 30,
     bufferTime: 10
   })
+  const [editingAvailabilityId , setEditingAvailabilityId] = useState<string | null>(null)
 
   const days:string[] = [
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
@@ -81,6 +82,65 @@ function MentorAvailability({
       alert(err.response?.data?.message || 'Failed to create availability')
     }
   }
+
+  const formatTime = (minutes: number): string => {
+  const hours = Math.floor(minutes / 60);
+  const mins = minutes % 60;
+
+  return `${hours.toString().padStart(2, "0")}:${mins
+    .toString()
+    .padStart(2, "0")}`;
+};
+
+  const handleEditAvailability = (item:Availability) => {
+    setEditingAvailabilityId(item._id)
+
+    setFormData({
+      dayOfWeek:item.dayOfWeek,
+      startTime:formatTime(item.startTime),
+      endTime:formatTime(item.endTime),
+      slotDuration:item.slotDuration,
+      bufferTime:item.bufferTime
+    })
+  }
+
+  const handleUpdateAvailability = async () => {
+  if (!editingAvailabilityId) return;
+
+  try {
+    const payload = {
+      dayOfWeek: Number(formData.dayOfWeek),
+      startTime: convertTimeToMinutes(formData.startTime),
+      endTime: convertTimeToMinutes(formData.endTime),
+      slotDuration: Number(formData.slotDuration),
+      bufferTime: Number(formData.bufferTime),
+    };
+
+    await api.patch(
+      `/availability/${editingAvailabilityId}`,
+      payload,
+      {
+        withCredentials: true,
+      }
+    );
+
+    alert("Availability updated");
+
+    setEditingAvailabilityId(null);
+
+    fetchAvailability();
+
+    setFormData({
+      dayOfWeek: 1,
+      startTime: "09:00",
+      endTime: "12:00",
+      slotDuration: 30,
+      bufferTime: 10,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
   
   const handleDeleteAvailability = async (id:string) => {
     try {
@@ -199,12 +259,30 @@ function MentorAvailability({
               </div>
 
               <button
-                onClick={handleCreateAvailability}
+                onClick={editingAvailabilityId ? handleUpdateAvailability : handleCreateAvailability}
                 className="w-full bg-[#120f0a] text-white py-4 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-black transition-all active:scale-95"
               >
                 <Plus size={18} />
-                Create slots
+                {editingAvailabilityId ? "Update Availability" : "Create Slots"}
               </button>
+              {editingAvailabilityId && (
+                  <button
+                    onClick={() => {
+                      setEditingAvailabilityId(null);
+
+                      setFormData({
+                        dayOfWeek: 1,
+                        startTime: "09:00",
+                        endTime: "12:00",
+                        slotDuration: 30,
+                        bufferTime: 10,
+                      });
+                    }}
+                    className="w-full mt-3 border border-black/10 py-4 rounded-full"
+                  >
+                    Cancel
+                  </button>
+                )}
             </div>
           </div>
 
@@ -237,12 +315,21 @@ function MentorAvailability({
                         <span className="whitespace-nowrap">{item.slotDuration}m slots</span>
                       </div>
                     </div>
+                    <div className="flex gap-2 self-end sm:self-center">
+                      <button 
+                      onClick={() => handleEditAvailability(item)}
+                      className="text-blue-500 hover:text-blue-700 transition-colors p-2"
+                    >
+                      <Pencil size={20} />
+                    </button>
                     <button
                       onClick={() => handleDeleteAvailability(item._id)}
                       className="text-gray-300 hover:text-red-500 transition-colors p-2 self-end sm:self-center"
                     >
                       <Trash2 size={20} />
                     </button>
+                    
+                    </div>
                   </div>
                 ))}
               </div>

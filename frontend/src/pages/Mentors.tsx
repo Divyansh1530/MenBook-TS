@@ -150,7 +150,7 @@ function Mentors({
         theme: { color: '#e94e36' }
       };
       new window.Razorpay(options).open();
-    } catch (error) { alert('Booking failed'); }
+    } catch (error) {console.log(error); }
   };
 
   if (loading) return <div className="min-h-screen bg-[#fdfaf3] flex items-center justify-center font-serif text-2xl text-gray-400">Loading...</div>;
