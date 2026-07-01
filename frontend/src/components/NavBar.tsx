@@ -72,6 +72,8 @@ function NavBar({
         <div className="hidden md:flex items-center gap-10">
           <Link to="/" className="text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors">Home</Link>
           <Link to="/browse-mentors" className="text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors">Browse mentors</Link>
+          <Link to="/about" className='text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors'>About</Link>
+          <Link to="/contact" className='text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors'>Contact</Link>
           
 
           {user?.role === 'mentor' && (
@@ -204,6 +206,18 @@ function NavBar({
           onClick={() => setMenuOpen(false)}>
             Browse Mentors
           </Link>
+          <Link 
+          to="/about" 
+          className="block text-lg font-medium text-gray-800" 
+          onClick={() => setMenuOpen(false)}>
+            About
+          </Link>
+          <Link 
+          to="/contact" 
+          className="block text-lg font-medium text-gray-800" 
+          onClick={() => setMenuOpen(false)}>
+            Contact
+          </Link>
           {!user &&
           <div className='flex gap-5'>
           <Link
@@ -221,6 +235,7 @@ function NavBar({
            Signup
           </Link>
           </div>
+          
         }
           {user && (
             <>

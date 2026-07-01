@@ -184,7 +184,6 @@ function Signup() {
                   name="title"
                   value={formData.title}
                   onChange={handleChange}
-                  placeholder="Frontend Engineer"
                   className="w-full bg-white/40 border border-black/10 rounded-2xl px-5 py-4 outline-none focus:border-black/30 transition-all font-sans"
                 />
               </div>

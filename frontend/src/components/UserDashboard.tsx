@@ -186,7 +186,7 @@ const totalInvested = bookings.reduce(
             <p className="text-gray-500 text-base md:text-lg">A snapshot of your learning journey.</p>
           </div>
           <button 
-            onClick={() => navigate('/mentors')}
+            onClick={() => navigate('/browse-mentors')}
             className="w-50 md:w-60 bg-[#120f0a] text-white px-8 py-3 md:py-4 rounded-full font-medium flex items-center justify-center gap-3 hover:bg-black transition-all group"
           >
             Find a mentor <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />

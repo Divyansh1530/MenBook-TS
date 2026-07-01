@@ -13,6 +13,10 @@ import MentorAvailability from "./pages/MentorAvailability"
 import Profile from "./pages/Profile"
 import Dashboard from "./pages/Dashboard"
 import MentorOnboarding from "./pages/MentorOnboarding"
+import About from "./pages/About"
+import ContactPage from "./pages/Contact"
+import TermsPage from "./pages/Terms"
+import Privacy from "./pages/Privacy"
 
 
 function App() {
@@ -63,6 +67,10 @@ if (loading) {
           <Route path="/mentor-onboarding" element={<MentorOnboarding user={user} setUser={setUser} />} />
           <Route path="/signup" element={<Signup />}/>
           <Route path="/login" element={<Login setUser={setUser} />}/>
+          <Route path ="/about" element={<About />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<Privacy />} />
         </Routes>
         <Footer />
       </div>

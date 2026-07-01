@@ -65,7 +65,7 @@ function About() {
 
         <div className="mt-20 rounded-3xl border border-border bg-[#1a0f06] px-8 py-14 md:p-16">
           <div className="max-w-2xl">
-            <p className="text-xs text-[#a19a91 ] uppercase tracking-widest">Why we built it</p>
+            <p className="text-xs text-[#a19a91] uppercase tracking-widest">Why we built it</p>
             <h2 className="mt-3 font-display hero-heading leading-[1.15] tracking-tighter transform scale-y-[1.2] origin-left text-3xl text-[#fbf6ee] md:text-4xl">We believe mentorship should feel human, not transactional.</h2>
             <p className="mt-6 leading-relaxed text-[#cec8bf]">
               MenBook was built because the best conversations we ever had came from people a few steps ahead of us. We wanted to make those conversations easier to find, safer to book, and simple to keep coming back to.
