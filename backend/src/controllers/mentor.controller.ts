@@ -61,6 +61,12 @@ const getAllMentors = asyncHandler(async (req, res) => {
                     $regex: search,
                     $options: "i"
                 }
+            },
+            {
+                "mentorProfile.title": {
+                    $regex: search,
+                    $options: "i"
+                } 
             }
         ]
     }

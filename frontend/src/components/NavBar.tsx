@@ -4,6 +4,7 @@ import { Menu, X, LogOut, LayoutDashboard, User, Calendar } from 'lucide-react';
 import api from '../api/axios';
 import { AxiosError } from 'axios';
 import type { NavBarProps } from '../types/user';
+import {toast} from 'sonner'
 
 
 function NavBar({
@@ -49,7 +50,7 @@ function NavBar({
       navigate('/login');
     } catch (error) {
       const err = error as AxiosError<{message:string}>  
-      alert(err.response?.data?.message || 'Logout failed');
+      toast.error(err.response?.data?.message || 'Logout failed');
     }
   };
 
@@ -206,7 +207,27 @@ function NavBar({
           onClick={() => setMenuOpen(false)}>
             Browse Mentors
           </Link>
-          <Link 
+          
+          {!user &&
+          <div className='flex items-center gap-5'>
+          <Link
+          to="/login"
+          className='text-lg py-1 font-medium text-gray-900'
+          onClick={() => setMenuOpen(false)}
+          >
+           Login
+          </Link>
+          <Link
+          to="/signup"
+          className='text-md flex items-center font-normal bg-black rounded-full px-4 py-2 text-white'
+          onClick={() => setMenuOpen(false)}
+          >
+           Signup
+          </Link>
+          </div>
+          
+        }
+        <Link 
           to="/about" 
           className="block text-lg font-medium text-gray-800" 
           onClick={() => setMenuOpen(false)}>
@@ -218,34 +239,33 @@ function NavBar({
           onClick={() => setMenuOpen(false)}>
             Contact
           </Link>
-          {!user &&
-          <div className='flex gap-5'>
-          <Link
-          to="/login"
-          className='text-lg py-1 font-medium text-gray-900'
-          onClick={() => setMenuOpen(false)}
-          >
-           Login
-          </Link>
-          <Link
-          to="/signup"
-          className='text-md font-normal bg-black rounded-full px-4 py-2 text-white'
-          onClick={() => setMenuOpen(false)}
-          >
-           Signup
-          </Link>
-          </div>
-          
-        }
           {user && (
             <>
 
               {user.role === 'mentor' && (
-                <Link to="/mentor-availability" className="block text-lg font-medium text-gray-800" onClick={() => setMenuOpen(false)}>Availability</Link>
+                <Link to="/mentor-availability" className="flex items-center gap-1 text-lg font-medium text-gray-800" onClick={() => setMenuOpen(false)}>
+                  <Calendar size={18} className='text-gray-400'/>
+                    Availability
+                    </Link>
               )}
-              <Link to={getDashboardLink()} className="block text-lg font-medium text-gray-800" onClick={() => setMenuOpen(false)}>Dashboard</Link>
-              <Link to={getProfileLink()} className="block text-lg font-medium text-gray-800" onClick={() => setMenuOpen(false)}>Profile Settings</Link>
-              <button onClick={handleLogout} className="w-full text-left text-lg font-medium text-red-600">Logout</button>
+              <Link to={getDashboardLink()} className="flex items-center text-lg font-medium text-gray-800 space-x-1" onClick={() => setMenuOpen(false)}><LayoutDashboard 
+                  size={18} 
+                  className="text-gray-400" 
+                  />
+                  <span>
+                    Dashboard
+                  </span>
+                  </Link>
+              <Link to={getProfileLink()} className="flex items-center text-lg font-medium text-gray-800 space-x-1" onClick={() => setMenuOpen(false)}><User
+                  size={18} 
+                  className="text-gray-400" 
+                  />
+                  <span>
+                    Profile Settings
+                  </span>
+                  </Link>
+              <button onClick={handleLogout} className="flex items-center w-full text-lg gap-1 font-medium text-red-600"><LogOut/>Logout</button>
+              
             </>
           )}
         </div>

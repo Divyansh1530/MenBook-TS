@@ -1,4 +1,4 @@
-import { BrowserRouter , Routes , Route } from "react-router-dom"
+import { Routes , Route } from "react-router-dom"
 import Signup from "./pages/Signup"
 import NavBar from "./components/NavBar"
 import type { User } from "./types/user"
@@ -17,12 +17,17 @@ import About from "./pages/About"
 import ContactPage from "./pages/Contact"
 import TermsPage from "./pages/Terms"
 import Privacy from "./pages/Privacy"
+import { Toaster } from "sonner"
+import {motion} from 'motion/react'
+import { AnimatePresence } from "motion/react"
+import { useLocation } from "react-router-dom"
 
 
 function App() {
 
   const [user , setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true);
+  const location = useLocation()
 
   useEffect(() => {
   const fetchUser = async () => {
@@ -54,10 +59,23 @@ if (loading) {
 }
 
   return (
-    <BrowserRouter>
-      <div className="bg-[#fbf6ee]">
+    
+      <motion.div
+      initial={{
+        filter: "blur(10px)",
+        translateY: -20,
+      }}
+      animate={{
+        filter: "blur(0px)",
+        translateY: 0,
+      }}
+      transition={{
+        duration: 0.5,
+      }}
+      className="bg-[#fbf6ee]">
         <NavBar user={user} setUser={setUser} />
-        <Routes>
+        <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
           <Route path="/browse-mentors" element={<BrowseMentors />} />
           <Route path="/mentors/:id" element={<Mentor user={user} />} />
@@ -72,9 +90,16 @@ if (loading) {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<Privacy />} />
         </Routes>
+        </AnimatePresence>
+        <Toaster
+          position="top-right"
+          richColors
+          closeButton
+          duration={3000}
+          expand={true}
+          />
         <Footer />
-      </div>
-    </BrowserRouter>
+      </motion.div>
   )
 }
 

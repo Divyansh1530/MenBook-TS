@@ -3,6 +3,9 @@ import { Link, useNavigate } from 'react-router-dom'
 import api from '../api/axios'
 import type { User } from '../types/user';
 import { AxiosError } from 'axios';
+import {FcGoogle} from 'react-icons/fc'
+import {toast} from 'sonner'
+import PageTransition from '../components/PageTransition';
 
 interface LoginProps {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -44,14 +47,15 @@ function Login({
       navigate("/")
     } catch (error) {
       const err = error as AxiosError<{message:string}>
-      alert(err.response?.data?.message || 'Login failed')
+      toast.error(err.response?.data?.message || 'Login failed')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-[#fdfaf3] flex flex-col items-center justify-center pb-15 md:pt-5 p-6">
+    <PageTransition>
+    <div className="md:min-h-screen min-h-[80vh] bg-[#fdfaf3] flex flex-col items-center justify-center pt-5 md:pt-20 p-6">
       <div className="w-full max-w-md">
         
         <div className="mb-10">
@@ -65,6 +69,16 @@ function Login({
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
+            
+          <a 
+          href={`${import.meta.env.VITE_API_URL}/users/auth/google/login`}
+          className="flex bg-[#fefcf8] items-center justify-center gap-3 w-full rounded-2xl border border-gray-300 py-3 font-medium transition"
+          ><FcGoogle size={22}/>
+          <span>Continue With Google</span>
+          </a>
+          <div className='flex items-center py-4 justify-center hero-heading font-serif text-md text-[#1a1a1a] mb-2 tracking-normal transform scale-y-[1.1] origin-left'>
+            OR
+          </div>
             <label className="block text-[10px] font-normal tracking-[0.15em] text-black/50 uppercase mb-2">
               EMAIL
             </label>
@@ -91,13 +105,7 @@ function Login({
               required
             />
           </div>
-          <a 
-          href="http://localhost:8000/api/v1/users/auth/google/login"
-          className="w-full flex justify-center items-center gap-3 border-black/10 py-3 rounded-2xl"
-          >
-          Continue With Google
-          </a>
-
+          
           <button
             type="submit"
             disabled={loading}
@@ -105,6 +113,7 @@ function Login({
           >
             {loading ? 'Logging in...' : 'Log in'}
           </button>
+          
         </form>
 
         <p className="text-center text-gray-600 mt-8 font-sans">
@@ -112,6 +121,7 @@ function Login({
         </p>
       </div>
     </div>
+    </PageTransition>
   )
 }
 

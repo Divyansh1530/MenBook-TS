@@ -5,6 +5,8 @@ import { Navigate } from 'react-router-dom'
 import type { MentorAvailabilityProps } from '../types/mentor'
 import type { Availability, AvailabilityForm } from '../types/availability'
 import api from '../api/axios'
+import {toast} from 'sonner'
+import PageTransition from '../components/PageTransition'
 
 function MentorAvailability({
   user
@@ -55,15 +57,15 @@ function MentorAvailability({
   const handleCreateAvailability = async () => {
     try {
       if (startMins >= endMins) {
-        return alert("End time must be after start time")
+        return toast.error("End time must be after start time")
       }
 
       if (Number(formData.slotDuration) <= 0) {
-        return alert("Invalid slot duration")
+        return toast.error("Invalid slot duration")
       }
 
       if (Number(formData.bufferTime) < 0) {
-        return alert("Invalid buffer time")
+        return toast.error("Invalid buffer time")
       }
       const payload = {
         dayOfWeek: Number(formData.dayOfWeek),
@@ -75,11 +77,11 @@ function MentorAvailability({
       await api.post('/availability/create', payload, {
         withCredentials: true
       })
-      alert('Availability created successfully')
+      toast.success('Availability created successfully')
       fetchAvailability()
     } catch (error) {
       const err = error as AxiosError<{message:string}>
-      alert(err.response?.data?.message || 'Failed to create availability')
+      toast.error(err.response?.data?.message || 'Failed to create availability')
     }
   }
 
@@ -124,7 +126,7 @@ function MentorAvailability({
       }
     );
 
-    alert("Availability updated");
+    toast.success("Availability updated");
 
     setEditingAvailabilityId(null);
 
@@ -150,7 +152,7 @@ function MentorAvailability({
       fetchAvailability()
     } catch (error) {
       const err = error as AxiosError<{message:string}>  
-      alert(err.response?.data?.message || "Failed to delete")
+      toast.error(err.response?.data?.message || "Failed to delete")
     }
   }
 
@@ -169,6 +171,7 @@ function MentorAvailability({
   const slotsCount = totalDuration > 0 ? Math.floor(totalDuration / (Number(formData.slotDuration) + Number(formData.bufferTime))) : 0
 
   return (
+    <PageTransition>
     <section className="min-h-screen bg-[#fdfaf3] py-24 px-4 sm:px-6 md:px-12 lg:px-24">
 
       <div className="max-w-7xl mx-auto xl:px-20">
@@ -339,6 +342,7 @@ function MentorAvailability({
         </div>
       </div>
     </section>
+    </PageTransition>
   )
 }
 

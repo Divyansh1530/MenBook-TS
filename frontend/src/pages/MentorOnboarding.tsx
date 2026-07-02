@@ -3,6 +3,7 @@ import { useNavigate,Navigate } from 'react-router-dom'
 import api from '../api/axios'
 import { AxiosError } from 'axios'
 import type { NavBarProps } from '../types/user'
+import PageTransition from '../components/PageTransition'
 
 function MentorOnboarding({
     user,
@@ -180,7 +181,7 @@ function MentorOnboarding({
   }
 
   return (
-
+  <PageTransition>
     <section className="min-h-screen bg-[#fdfaf3] py-24 px-6 md:px-12 lg:px-24">
 
       <div className="max-w-3xl mx-auto">
@@ -376,6 +377,7 @@ function MentorOnboarding({
       </div>
 
     </section>
+    </PageTransition>
   )
 }
 

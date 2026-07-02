@@ -1,9 +1,11 @@
 import React from 'react'
 import { UserCheck , Calendar , MessageSquare , ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import PageTransition from '../components/PageTransition';
 
 function About() {
   return (
+    <PageTransition>
     <div className="relative overflow-hidden">
       <div 
         className="absolute inset-0 z-0 opacity-[0.4]"
@@ -84,6 +86,7 @@ function About() {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 }
 

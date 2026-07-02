@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Send , Mail , Github , Linkedin , ArrowRight} from "lucide-react";
 import { Link } from "react-router-dom";
+import PageTransition from "../components/PageTransition";
 
 function ContactPage() {
   const [status, setStatus] = useState<"idle" | "sent">("idle");
@@ -11,6 +12,7 @@ function ContactPage() {
   };
 
   return (
+    <PageTransition>
     <div className="relative">
         <div 
         className="absolute inset-0 z-0 opacity-[0.4]"
@@ -84,6 +86,7 @@ function ContactPage() {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 }
 

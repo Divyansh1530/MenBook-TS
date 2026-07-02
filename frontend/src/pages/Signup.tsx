@@ -3,13 +3,50 @@ import api from '../api/axios.ts'
 import { Link, useNavigate } from 'react-router-dom'
 import { useSearchParams } from 'react-router-dom'
 import type { AxiosError } from 'axios'
+import { FcGoogle } from 'react-icons/fc'
+import { Eye , EyeOff } from 'lucide-react'
+import PageTransition from '../components/PageTransition.tsx'
 
 function Signup() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const roleFromURL = searchParams.get("role")
 
+  interface FormErrors {
+    name?:string;
+    email?:string;
+    password?:string;
+  }
+
+  const [errors , setErrors] = useState<FormErrors>({})
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_\-+=])[A-Za-z\d@$!%*?&#^()_\-+=]{8,}$/
   
+  const validateForm = () => {
+    const newErrors: FormErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required.";
+    }
+
+    if (!emailRegex.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+
+    if (!passwordRegex.test(formData.password)) {
+      newErrors.password =
+        "Minimum 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special character.";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const [serverError , setServerError] = useState("")
+  const [showPassword , setShowPassword] = useState(false)
+
   interface SignupFormData {
     name:string;
     email:string;
@@ -36,12 +73,25 @@ function Signup() {
   const [avatar, setAvatar] = useState<File | null>(null)
   const [loading, setLoading] = useState(false)
 
-  const handleChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
 
   const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    if (!validateForm()) return
+
     try {
       setLoading(true)
       const data = new FormData()
@@ -65,13 +115,14 @@ function Signup() {
       navigate("/login")
     } catch (error) {
       const err = error as AxiosError<{message:string}>;  
-      alert(err.response?.data?.message || "Signup failed")
+      setServerError(err.response?.data?.message || "Signup failed")
     } finally {
       setLoading(false)
     }
   }
 
   return (
+    <PageTransition>
     <div className="min-h-screen bg-[#fdfaf3] flex flex-col items-center justify-center py-20 px-6">
       <div className="w-full max-w-md">
         
@@ -120,11 +171,11 @@ function Signup() {
             type="button"
             onClick={() => {
               window.location.href =
-                `http://localhost:8000/api/v1/users/auth/google/signup?role=${formData.role}`
+                `${import.meta.env.VITE_API_URL}/users/auth/google/signup?role=${formData.role}`
             }}
-            className="w-full border border-black/10 py-3 rounded-full font-medium mt-4 hover:bg-white transition-all"
-          >
-            Continue with Google
+             className="flex bg-[#fefcf8] items-center justify-center gap-3 w-full rounded-2xl border border-gray-300 py-3 font-medium transition cursor-pointer"
+                      ><FcGoogle size={22}/>
+                      <span>Continue With Google</span>
           </button>
           <div className='text-center'>
             OR
@@ -138,9 +189,22 @@ function Signup() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full bg-white/40 border border-black/10 rounded-2xl px-5 py-4 outline-none focus:border-black/30 transition-all font-sans"
               required
+              className={`w-full bg-white/40 rounded-2xl px-5 py-4 outline-none transition-all font-sans
+                ${
+                  errors.name
+                  ? "border border-red-500"
+                  : "border border-black/10 focus:border-black/30"
+                }
+                `}
+              
             />
+            {errors.name && (
+              <p className='mt-1 text-sm text-red-500'>
+                {errors.name}
+              </p>
+
+            )}
           </div>
 
           <div>
@@ -152,25 +216,54 @@ function Signup() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full bg-white/40 border border-black/10 rounded-2xl px-5 py-4 outline-none focus:border-black/30 transition-all font-sans"
               required
+              className={`w-full bg-white/40 rounded-2xl px-5 py-4 outline-none transition-all font-sans
+                ${ 
+                  errors.email
+                  ? "border border-red-500"
+                  : "border border-black/10 focus:border-black/30 "
+                }
+                `}
             />
+            {errors.email && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.email}
+                </p>
+              )}
           </div>
 
           <div>
             <label className="block text-[10px] font-normal tracking-[0.15em] text-black/50 uppercase mb-2">
               PASSWORD
             </label>
+            <div className='relative'>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full bg-white/40 border border-black/10 rounded-2xl px-5 py-4 outline-none focus:border-black/30 transition-all font-sans"
               required
-            />
+              className={`w-full bg-white/40 rounded-2xl px-5 py-4 outline-none transition-all font-sans
+                ${
+                  errors.password
+                  ? "border border-red-500"
+                  : "border border-black/10 focus:border-black/30 "
+                }`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+                </div>
+            {errors.password && (
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.password}
+                </p>
+              )}
           </div>
-
 
           {formData.role === "mentor" && (
             <div className="space-y-6 pt-2 border-t border-black/5">
@@ -212,7 +305,11 @@ function Signup() {
               className="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-black/5 file:text-black hover:file:bg-black/10"
             />
           </div>
-
+          {serverError && (
+              <p className="text-red-500 text-sm text-center">
+                {serverError}
+              </p>
+            )}
           <button
             type="submit"
             disabled={loading}
@@ -227,6 +324,7 @@ function Signup() {
         </p>
       </div>
     </div>
+    </PageTransition>
   )
 }
 

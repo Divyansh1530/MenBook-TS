@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import type { Mentor } from '../types/mentor';
 import type { BrowseMentorsResponse } from '../types/api';
+import PageTransition from '../components/PageTransition';
 
 function BrowseMentors() {
   const [mentors, setMentors] = useState<Mentor[]>([]);
@@ -117,6 +118,7 @@ useEffect(() => {
   };
 
   return (
+    <PageTransition>
     <div className="bg-[#fdfaf3] min-h-screen pt-20 pb-24 px-4 sm:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto">
         
@@ -143,7 +145,7 @@ useEffect(() => {
 
     <input
       type="text"
-      placeholder="Search by name, bio or expertise..."
+      placeholder="Search by name, title, bio, expertise..."
       value={search}
       onChange={(e:ChangeEvent<HTMLInputElement>) =>
         setSearch(e.target.value)
@@ -384,7 +386,7 @@ useEffect(() => {
       </div>
       
     </div>
-    
+    </PageTransition>
   );
 }
 

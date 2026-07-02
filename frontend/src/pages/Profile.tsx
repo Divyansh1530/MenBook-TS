@@ -14,6 +14,8 @@ import api from '../api/axios';
 import { AxiosError } from 'axios';
 import type { User } from '../types/user';
 import type { PasswordForm, ProfileForm } from '../types/profile';
+import {toast} from 'sonner'
+import PageTransition from '../components/PageTransition';
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -90,11 +92,11 @@ function Profile() {
         payload.portfolio = formData.portfolio;
       }
       await api.patch('/users/update-details', payload, { withCredentials: true });
-      alert('Profile updated successfully');
+      toast.success('Profile updated successfully');
       fetchCurrentUser();
     } catch (error) {
       const err = error as AxiosError<{message:string}>  
-      alert(err.response?.data?.message || 'Profile update failed');
+      toast.error(err.response?.data?.message || 'Profile update failed');
     }
   };
 
@@ -106,28 +108,28 @@ function Profile() {
         withCredentials: true,
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      alert('Avatar updated successfully');
+      toast.success('Avatar updated successfully');
       fetchCurrentUser();
     } catch (error) {
       const err = error as AxiosError<{message:string}>
-      alert(err.response?.data?.message || 'Avatar update failed');
+      toast.error(err.response?.data?.message || 'Avatar update failed');
     }
   };
 
   const handleChangePassword = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-        return alert("Passwords do not match");
+        return toast.error("Passwords do not match");
     }
     try {
       await api.patch('/users/change-password', {
         oldPassword: passwordData.oldPassword,
         newPassword: passwordData.newPassword
       }, { withCredentials: true });
-      alert('Password changed successfully');
+      toast.success('Password changed successfully');
       setPasswordData({ oldPassword: '', newPassword: '', confirmPassword: '' });
     } catch (error) {
       const err = error as AxiosError<{message:string}>  
-      alert(err.response?.data?.message || 'Password change failed');
+      toast.error(err.response?.data?.message || 'Password change failed');
     }
   };
 
@@ -139,6 +141,7 @@ function Profile() {
   );
   
   return (
+    <PageTransition>
     <section className="min-h-screen bg-[#fdfaf3] py-24 px-4 sm:px-6 md:px-12 lg:px-24">
       <div className="max-w-7xl mx-auto xl:px-20">
         
@@ -247,6 +250,7 @@ function Profile() {
         </div>
       </div>
     </section>
+    </PageTransition>
   );
 }
 interface InputGroupProps {

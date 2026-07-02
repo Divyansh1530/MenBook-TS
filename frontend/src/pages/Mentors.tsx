@@ -6,6 +6,9 @@ import type { Mentor } from '../types/mentor';
 import type { Review } from '../types/review';
 import type { Slot } from '../types/availability';
 import api from '../api/axios';
+import {toast} from 'sonner'
+import PageTransition from '../components/PageTransition';
+import Skeleton from '../components/Skeleton'
 
 function Mentors({
   user
@@ -25,6 +28,8 @@ function Mentors({
   const [slots, setSlots] = useState<Slot[]>([]);
   const [dateRange, setDateRange] = useState<Date[]>([]);
   const [processingPayment, setProcessingPayment] = useState(false)
+  const [showFullBio , setShowFullBio] = useState(false)
+  const BIO_LIMIT = 150
 
   useEffect(() => {
 
@@ -92,7 +97,7 @@ function Mentors({
 
   const handleBookSession = async () => {
     if (!user) { navigate('/login'); return }
-    if (!selectedSlot) return alert("Please select a time slot");
+    if (!selectedSlot) return toast.warning("Please select a time slot");
 
     try {
       const bookingResponse = await api.post(
@@ -136,15 +141,16 @@ function Mentors({
 
               setShowBookingModal(false)
 
-              alert('Payment successful')
+              toast.success('Payment successful')
 
             } catch (error) {
 
-              alert('Payment verification failed')
+              toast.error('Payment verification failed')
 
             } finally {
 
               setProcessingPayment(false)
+              navigate("/dashboard")
             }
           },
         theme: { color: '#e94e36' }
@@ -153,9 +159,40 @@ function Mentors({
     } catch (error) {console.log(error); }
   };
 
-  if (loading) return <div className="min-h-screen bg-[#fdfaf3] flex items-center justify-center font-serif text-2xl text-gray-400">Loading...</div>;
+  if (loading) {
+  return (
+    <section className="min-h-screen bg-[#fdfaf3] py-24 px-6">
+      <div className="max-w-4xl mx-auto">
+
+        <Skeleton className="h-6 w-40 mb-12" />
+
+        <div className="flex flex-col md:flex-row gap-10">
+
+          <Skeleton className="w-48 h-48 rounded-[40px]" />
+
+          <div className="flex-1">
+
+            <Skeleton className="h-12 w-72 mb-4" />
+
+            <Skeleton className="h-6 w-28 mb-8" />
+
+            <Skeleton className="h-5 w-full mb-2" />
+            <Skeleton className="h-5 w-full mb-2" />
+            <Skeleton className="h-5 w-4/5 mb-8" />
+
+            <Skeleton className="h-14 w-56 rounded-full" />
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  );
+}
 
   return (
+    <PageTransition>
     <section className="min-h-screen bg-[#fdfaf3] md:py-24 py-16 px-6 relative">
       <div className="max-w-4xl mx-auto">
 
@@ -175,15 +212,29 @@ function Mentors({
                 {mentor!.mentorProfile?.avgRating || "New"}
               </div>
             </div>
-            <p className="text-xl text-gray-500 font-sans mb-8 leading-relaxed max-w-2xl">
-              {mentor!.mentorProfile?.bio}
+            <p className="text-xl text-gray-500 font-sans leading-relaxed max-w-2xl">
+              {showFullBio ||
+              mentor!.mentorProfile!.bio.length <= BIO_LIMIT
+                ? mentor!.mentorProfile!.bio
+                : `${mentor!.mentorProfile!.bio.slice(0, BIO_LIMIT)}...`}
             </p>
+
+            {mentor!.mentorProfile!.bio.length > BIO_LIMIT && (
+              <button
+                onClick={() => setShowFullBio(!showFullBio)}
+                className="flex mt-1 mb-3 text-sm font-medium text-black hover:underline"
+              >
+                {showFullBio ? "Read less" : "Read more"}
+              </button>
+            )}
+            {user?.role !== "mentor" && (
             <button 
               onClick={() => { setShowBookingModal(true); fetchSlots(selectedDate); }}
               className="bg-[#120f0a] text-white px-10 py-4 rounded-full font-medium hover:bg-black transition-all shadow-xl active:scale-95"
             >
               Book a session • ₹{mentor!.mentorProfile?.pricing}
             </button>
+            )}
           </div>
         </div>
 
@@ -207,11 +258,11 @@ function Mentors({
 
 
         {showBookingModal && (
-          <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/40 backdrop-blur-md px-4 md:pt-50 pb-30 animate-in fade-in duration-300">
+          <div className="fixed inset-0 z-100 overflow-hidden bg-black/40 backdrop-blur-md px-4 md:pt-20 pt-40 animate-in fade-in duration-300">
 
             <div className="absolute inset-0" onClick={() => setShowBookingModal(false)} />
 
-            <div className="relative bg-white w-full max-w-125 rounded-[40px] p-10 shadow-2xl scale-in-center">
+            <div className="relative mx-auto bg-white w-full max-w-125 rounded-[40px] max-h-[calc(100vh-6rem)] overflow-y-auto p-10 shadow-2xl scale-in-center">
               <button onClick={() => setShowBookingModal(false)} className="absolute top-8 right-8 text-gray-400 hover:text-black transition-colors">
                 <X size={24} />
               </button>
@@ -239,7 +290,7 @@ function Mentors({
 
               <div className="mb-10">
                 <p className="text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-4">PICK A TIME</p>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-3 overflow-y-auto max-h-30">
                   {slots.length > 0 ? slots.map((slot, i) => (
                     <button key={i} onClick={() => setSelectedSlot(slot)} className={`py-3 rounded-2xl border text-sm font-medium transition-all ${selectedSlot === slot ? 'bg-[#e94e36] border-[#e94e36] text-white' : 'bg-white border-black/5 text-gray-700 hover:border-black/20'}`}>
                      {new Date(slot.startTimeISO).toLocaleTimeString([], {
@@ -287,7 +338,7 @@ function Mentors({
         </div>
       
     </section>
-    
+    </PageTransition>
   );
 }
 

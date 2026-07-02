@@ -5,6 +5,7 @@ import { AxiosError } from 'axios';
 import type { Booking } from '../types/booking';
 import api from '../api/axios';
 import type { UserDashboardProps } from '../types/user';
+import {toast} from 'sonner'
 
 function MentorDashboard({
   user
@@ -38,11 +39,11 @@ function MentorDashboard({
       await api.patch(`/booking/${bookingId}/complete`, {}, {
         withCredentials: true
       });
-      alert('Booking marked as completed');
+      toast.success('Booking marked as completed');
       fetchBookings();
     } catch (error) {
       const err = error as AxiosError<{message:string}>  
-      alert(err.response?.data?.message || 'Failed to update booking');
+      toast.error(err.response?.data?.message || 'Failed to update booking');
     }
   };
 

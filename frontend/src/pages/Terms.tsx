@@ -1,7 +1,9 @@
 import React from 'react'
+import PageTransition from '../components/PageTransition';
 
 function TermsPage() {
   return (
+    <PageTransition>
     <div className="relative">
          <div 
         className="absolute inset-0 z-0 opacity-[0.4]"
@@ -68,6 +70,7 @@ function TermsPage() {
         <p className="mt-16 text-sm text-[#5e534a]">Last updated: {new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}.</p>
       </div>
     </div>
+    </PageTransition>
   );
 }
 

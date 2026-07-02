@@ -231,9 +231,9 @@ const markBookingComplete = asyncHandler(async(req,res) => {
         throw new ApiError(404,"Booking not found")
     }
 
-    if (booking.mentorId.toString() !== req.user!._id.toString()) {
-        throw new ApiError(403,"Unauthorized")
-    }
+    // if (booking.mentorId.toString() !== req.user!._id.toString()) {
+    //     throw new ApiError(403,"Unauthorized")
+    // }
 
     booking.status = "completed"
     booking.expiresAt = null
