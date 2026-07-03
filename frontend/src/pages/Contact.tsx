@@ -69,9 +69,9 @@ function ContactPage() {
             </div>
 
             <div className="space-y-4">
-              <ContactLink icon={<Mail className="h-5 w-5" />} label="Email" href="mailto:hello@menbook.studio" value="hello@menbook.studio" />
-              <ContactLink icon={<Github className="h-5 w-5" />} label="GitHub" href="https://github.com/menbook" value="github.com/menbook" />
-              <ContactLink icon={<Linkedin className="h-5 w-5" />} label="LinkedIn" href="https://linkedin.com/company/menbook" value="linkedin.com/company/menbook" />
+              <ContactLink icon={<Mail className="h-5 w-5" />} label="Email" href="mailto:menbook.studio@gmail.com" value="menbook.studio@gmail.com" />
+              <ContactLink icon={<Github className="h-5 w-5" />} label="GitHub" href="https://github.com/Divyansh1530" value="github.com/Divyansh1530" />
+              <ContactLink icon={<Linkedin className="h-5 w-5" />} label="LinkedIn" href="https://www.linkedin.com/in/divyansh-yadav-4abb87315/" value="linkedin.com/in/divyansh-yadav-4abb87315/" />
             </div>
 
             <div className="rounded-2xl border border-border bg-[#1a0f06]

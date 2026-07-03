@@ -148,7 +148,11 @@ function Profile() {
         <header className="mb-12 md:mb-16">
           <p className="text-[10px] font-normal tracking-[0.2em] text-black/50 uppercase mb-4">ACCOUNT</p>
           <h1 className="hero-heading font-serif text-4xl sm:text-5xl md:text-6xl text-[#1a1a1a] mb-6 tracking-tighter transform scale-y-[1.2] origin-left">Your profile</h1>
-          <p className="text-gray-500 text-base sm:text-lg">Keep your details fresh so mentors recognize you.</p>
+         <p className="text-gray-500 text-base sm:text-lg">
+              {user?.role === "mentor"
+                ? "Keep your profile up to date so learners know what you offer."
+                : "Keep your details fresh so mentors recognize you."}
+            </p>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">

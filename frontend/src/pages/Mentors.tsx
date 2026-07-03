@@ -142,6 +142,7 @@ function Mentors({
               setShowBookingModal(false)
 
               toast.success('Payment successful')
+              navigate("/dashboard")
 
             } catch (error) {
 

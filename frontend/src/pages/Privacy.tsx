@@ -17,7 +17,7 @@ function Privacy() {
         <p className="text-xs uppercase tracking-widest text-[#5e534a]">Legal</p>
         <h1 className="mt-4 font-display text-[clamp(2.5rem,6vw,4rem)] hero-heading leading-[1.15] tracking-tighter transform scale-y-[1.3] origin-left">Privacy Policy</h1>
         <p className="mt-6 text-[#5e534a] leading-relaxed">
-          This policy explains what data MenBook collects, how we use it, and how we keep it safe. If you have any questions, contact us at <a href="mailto:hello@menbook.studio" className="text-orange-700 hover:underline">hello@menbook.studio</a>.
+          This policy explains what data MenBook collects, how we use it, and how we keep it safe. If you have any questions, contact us at <a href="mailto:menbook.studio@gmail.com" className="text-orange-700 hover:underline">menbook.studio@gmail.com</a>.
         </p>
 
         <div className="mt-14 space-y-12">
@@ -51,7 +51,7 @@ function Privacy() {
 
           <Section title="Contact">
             <p className="leading-relaxed">
-              For privacy-related questions or data requests, email us at <a href="mailto:hello@menbook.studio" className="text-orange-700 hover:underline">hello@menbook.studio</a>.
+              For privacy-related questions or data requests, email us at <a href="mailto:menbook.studio@gmail.com" className="text-orange-700 hover:underline">menbook.studio@gmail.com</a>.
             </p>
           </Section>
         </div>
