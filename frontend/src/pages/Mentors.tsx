@@ -29,6 +29,7 @@ function Mentors({
   const [dateRange, setDateRange] = useState<Date[]>([]);
   const [processingPayment, setProcessingPayment] = useState(false)
   const [showFullBio , setShowFullBio] = useState(false)
+  const [showTestPaymentModal , setShowTestPaymentModal] = useState(false)
   const BIO_LIMIT = 150
 
   useEffect(() => {
@@ -142,7 +143,7 @@ function Mentors({
               setShowBookingModal(false)
 
               toast.success('Payment successful')
-              navigate("/dashboard")
+              navigate('/dashboard')
 
             } catch (error) {
 
@@ -151,7 +152,6 @@ function Mentors({
             } finally {
 
               setProcessingPayment(false)
-              navigate("/dashboard")
             }
           },
         theme: { color: '#e94e36' }
@@ -313,16 +313,67 @@ function Mentors({
                   <span className="font-serif text-3xl text-[#1a1a1a]">₹{mentor!.mentorProfile?.pricing}</span>
                   <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">60-min session</p>
                 </div>
-                <button onClick={handleBookSession} className="bg-[#120f0a] text-white px-8 py-4 rounded-full font-medium hover:bg-black transition-all active:scale-95">
+                <button onClick={() => setShowTestPaymentModal(true)} className="bg-[#120f0a] text-white px-8 py-4 rounded-full font-medium hover:bg-black transition-all active:scale-95">
                   {user ? 'Book now' : 'Log in to book'}
                 </button>
               </div>
             </div>
           </div>
+          
+        )}
+        {showTestPaymentModal && (
+          <div className="fixed inset-0 z-200 flex justify-center bg-black/50 backdrop-blur-sm px-4">
+            <div className="w-full my-20 mx-auto max-w-md rounded-4xl bg-white p-8 shadow-2xl absolute">
+
+              <button
+                onClick={() => setShowTestPaymentModal(false)}
+                className="absolute top-5 right-5 text-gray-400 hover:text-black"
+              >
+                <X size={22} />
+              </button>
+
+              <h2 className="font-serif text-3xl mb-4">
+                Razorpay Test Mode
+              </h2>
+
+              <p className="text-gray-500 leading-relaxed mb-6">
+                This Website uses <strong>Razorpay Test Mode</strong>. No real money
+                will be charged.
+              </p>
+
+              <div className="rounded-2xl bg-gray-50 p-4 text-sm space-y-2 mb-8">
+                <p><strong>Card:</strong> 6527 6589 0000 1005</p>
+                <p><strong>Expiry:</strong> Any future date</p>
+                <p><strong>CVV:</strong> Any 3 digits</p>
+                <p><strong>Name:</strong> Any name</p>
+                <p><strong>OTP:</strong> 123456</p>
+              </div>
+
+              <div className="flex justify-end gap-3">
+                <button
+                  onClick={() => setShowTestPaymentModal(false)}
+                  className="rounded-full border px-5 py-2"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowTestPaymentModal(false);
+                    handleBookSession();
+                  }}
+                  className="rounded-full bg-black px-5 py-2 text-white"
+                >
+                  Continue
+                </button>
+              </div>
+
+            </div>
+          </div>
         )}
         {processingPayment && (
-          <div className="fixed inset-0 z-200 bg-[#fdfaf3] flex flex-col items-center justify-center">
-
+          <div className="fixed inset-0 z-999 bg-[#fdfaf3] flex pt-20 justify-center px-6">
+            <div className="flex flex-col items-center text-center max-w-sm">
             <div className="w-16 h-16 border-4 border-black/10 border-t-black rounded-full animate-spin mb-8" />
 
             <h2 className="font-serif text-3xl text-[#1a1a1a] mb-3">
@@ -332,6 +383,7 @@ function Mentors({
             <p className="text-gray-500 text-sm">
               Please wait while we verify your payment.
             </p>
+            </div>
 
           </div>
         )}

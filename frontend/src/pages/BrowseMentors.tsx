@@ -6,6 +6,7 @@ import { AxiosError } from 'axios';
 import type { Mentor } from '../types/mentor';
 import type { BrowseMentorsResponse } from '../types/api';
 import PageTransition from '../components/PageTransition';
+import Skeleton from '../components/Skeleton';
 
 function BrowseMentors() {
   const [mentors, setMentors] = useState<Mentor[]>([]);
@@ -287,9 +288,47 @@ useEffect(() => {
 
 </div>
         
-        {loading ? (
-          <div className="text-center py-20 font-serif text-2xl text-gray-400 animate-pulse">Searching database...</div>
-        ) : (
+       {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {[...Array(9)].map((_, i) => (
+              <div
+                key={i}
+                className="bg-white/40 border border-black/5 rounded-[28px] sm:rounded-4xl p-6 sm:p-8"
+              >
+                <div className="flex justify-between items-start mb-6">
+                  <div className="flex gap-4 items-center">
+                    <Skeleton className="w-14 h-14 rounded-2xl" />
+
+                    <div>
+                      <Skeleton className="h-6 w-32 mb-2" />
+                      <Skeleton className="h-4 w-24" />
+                    </div>
+                  </div>
+
+                  <Skeleton className="h-5 w-10 rounded-full" />
+                </div>
+
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-3/4 mb-6" />
+
+                <div className="flex gap-2 mb-8">
+                  <Skeleton className="h-7 w-20 rounded-full" />
+                  <Skeleton className="h-7 w-24 rounded-full" />
+                </div>
+
+                <div className="pt-6 border-t border-black/5 flex items-center justify-between">
+                  <div>
+                    <Skeleton className="h-8 w-20 mb-2" />
+                    <Skeleton className="h-3 w-24" />
+                  </div>
+
+                  <Skeleton className="h-11 w-28 rounded-2xl" />
+                </div>
+              </div>
+            ))}
+          </div>
+          ) : (
           <>
           <div 
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">

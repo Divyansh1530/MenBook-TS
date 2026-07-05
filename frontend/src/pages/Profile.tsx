@@ -16,6 +16,7 @@ import type { User } from '../types/user';
 import type { PasswordForm, ProfileForm } from '../types/profile';
 import {toast} from 'sonner'
 import PageTransition from '../components/PageTransition';
+import Skeleton from '../components/Skeleton';
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -133,12 +134,82 @@ function Profile() {
     }
   };
 
-  if (loading)
-     return (
-    <div className="min-h-screen bg-[#fdfaf3] flex items-center justify-center font-serif text-2xl text-gray-400">
-      Loading Profile...
-    </div>
-  );
+      if (loading) {
+      return (
+        <section className="min-h-screen bg-[#fdfaf3] py-24 px-4 sm:px-6 md:px-12 lg:px-24">
+          <div className="max-w-7xl mx-auto xl:px-20">
+
+            {/* Header */}
+            <Skeleton className="h-3 w-24 mb-5" />
+            <Skeleton className="h-16 w-72 mb-6" />
+            <Skeleton className="h-6 w-80 mb-14" />
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+              {/* Left */}
+              <div className="lg:col-span-4 space-y-8">
+
+                <div className="bg-white/40 border border-black/10 rounded-[40px] p-10 flex flex-col items-center">
+
+                  <Skeleton className="w-32 h-32 rounded-full mb-6" />
+
+                  <Skeleton className="h-8 w-40 mb-3" />
+
+                  <Skeleton className="h-5 w-56 mb-5" />
+
+                  <Skeleton className="h-7 w-20 rounded-lg" />
+
+                </div>
+
+                <div className="bg-white/40 border border-black/10 rounded-[40px] p-10">
+
+                  <Skeleton className="h-8 w-52 mb-8" />
+
+                  <div className="space-y-6">
+                    <Skeleton className="h-14 rounded-2xl" />
+                    <Skeleton className="h-14 rounded-2xl" />
+                    <Skeleton className="h-14 rounded-2xl" />
+                    <Skeleton className="h-12 rounded-full" />
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* Right */}
+              <div className="lg:col-span-8 bg-white/40 border border-black/10 rounded-[40px] p-12">
+
+                <Skeleton className="h-10 w-56 mb-10" />
+
+                <div className="grid grid-cols-2 gap-8 mb-12">
+                  <Skeleton className="h-14 rounded-2xl" />
+                  <Skeleton className="h-14 rounded-2xl" />
+                </div>
+
+                <Skeleton className="h-8 w-48 mb-8" />
+
+                <div className="grid grid-cols-2 gap-8 mb-8">
+                  <Skeleton className="h-14 rounded-2xl" />
+                  <Skeleton className="h-14 rounded-2xl" />
+                  <Skeleton className="h-14 rounded-2xl" />
+                  <Skeleton className="h-14 rounded-2xl" />
+                  <Skeleton className="h-14 rounded-2xl" />
+                </div>
+
+                <Skeleton className="h-40 rounded-2xl mb-12" />
+
+                <div className="flex justify-end">
+                  <Skeleton className="h-14 w-48 rounded-full" />
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </section>
+      );
+    }
   
   return (
     <PageTransition>

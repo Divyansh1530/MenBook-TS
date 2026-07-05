@@ -7,6 +7,7 @@ import type { Availability, AvailabilityForm } from '../types/availability'
 import api from '../api/axios'
 import {toast} from 'sonner'
 import PageTransition from '../components/PageTransition'
+import Skeleton from '../components/Skeleton'
 
 function MentorAvailability({
   user
@@ -20,6 +21,7 @@ function MentorAvailability({
     bufferTime: 10
   })
   const [editingAvailabilityId , setEditingAvailabilityId] = useState<string | null>(null)
+  const [loading , setLoading] = useState(true)
 
   const days:string[] = [
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
@@ -31,6 +33,7 @@ function MentorAvailability({
 
   const fetchAvailability = async () => {
     try {
+      setLoading(true)
       const response = await api.get<{data:Availability[]}>('/availability/mentor', {
         withCredentials: true
       })
@@ -38,6 +41,9 @@ function MentorAvailability({
     } catch (error) {
       const err = error as AxiosError  
       console.log(err)
+    }
+    finally{
+      setLoading(false)
     }
   }
 
@@ -169,6 +175,70 @@ function MentorAvailability({
   const endMins = convertTimeToMinutes(formData.endTime)
   const totalDuration = endMins - startMins
   const slotsCount = totalDuration > 0 ? Math.floor(totalDuration / (Number(formData.slotDuration) + Number(formData.bufferTime))) : 0
+
+  if (loading) {
+  return (
+    <section className="min-h-screen bg-[#fdfaf3] py-24 px-4 sm:px-6 md:px-12 lg:px-24">
+      <div className="max-w-7xl mx-auto xl:px-20">
+
+        {/* Header */}
+        <Skeleton className="h-3 w-24 mb-4" />
+        <Skeleton className="h-14 w-72 mb-6" />
+        <Skeleton className="h-6 w-96 mb-12" />
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+
+          {/* Left Form */}
+          <div className="lg:col-span-5 bg-white/40 border border-black/5 rounded-[40px] p-10">
+
+            <Skeleton className="h-8 w-48 mb-8" />
+
+            <Skeleton className="h-14 rounded-2xl mb-6" />
+
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <Skeleton className="h-14 rounded-2xl" />
+              <Skeleton className="h-14 rounded-2xl" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <Skeleton className="h-14 rounded-2xl" />
+              <Skeleton className="h-14 rounded-2xl" />
+            </div>
+
+            <Skeleton className="h-12 rounded-2xl mb-6" />
+
+            <Skeleton className="h-14 rounded-full" />
+
+          </div>
+
+          {/* Right Side */}
+          <div className="lg:col-span-7">
+
+            <Skeleton className="h-8 w-48 mb-8" />
+
+            {[1, 2, 3].map((item) => (
+              <div
+                key={item}
+                className="bg-white/40 border border-black/5 rounded-4xl p-8 mb-4"
+              >
+                <Skeleton className="h-8 w-40 mb-4" />
+                <Skeleton className="h-5 w-64 mb-6" />
+
+                <div className="flex justify-end gap-3">
+                  <Skeleton className="h-10 w-10 rounded-xl" />
+                  <Skeleton className="h-10 w-10 rounded-xl" />
+                </div>
+              </div>
+            ))}
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  );
+}
 
   return (
     <PageTransition>

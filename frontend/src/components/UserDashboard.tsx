@@ -6,6 +6,7 @@ import { AxiosError } from 'axios'
 import type { UserDashboardProps } from '../types/user'
 import type {Booking} from '../types/booking'
 import type { Review } from '../types/review'
+import Skeleton from './Skeleton'
 
 function UserDashboard({
   user
@@ -24,6 +25,7 @@ function UserDashboard({
   }, [])
 
   const fetchBookings = async () => {
+    setLoading(true)
     try {
       const response = await api.get<{data:Booking[]}>('/booking/user-bookings', {
         withCredentials: true
@@ -129,11 +131,74 @@ function UserDashboard({
 
   const formatDate = (date:string):string => new Date(date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })
 
-  if (loading) return (
-    <div className="min-h-screen bg-[#fdfaf3] flex items-center justify-center font-serif text-2xl text-gray-400 text-center px-6">
-      Loading your journey...
-    </div>
-  )
+  if (loading)
+  return (
+    <section className="min-h-screen bg-[#fdfaf3] py-12 md:py-24 px-4 sm:px-8 md:px-12 lg:px-24">
+      <div className="max-w-7xl mx-auto xl:mx-35">
+
+        {/* Header */}
+        <Skeleton className="h-3 w-28 mb-5" />
+        <Skeleton className="h-16 w-56 mb-5" />
+        <Skeleton className="h-6 w-80 mb-10" />
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-16">
+          {[...Array(4)].map((_, i) => (
+            <div
+              key={i}
+              className="bg-white/40 border border-black/10 rounded-4xl p-8"
+            >
+              <Skeleton className="h-5 w-28 mb-6" />
+              <Skeleton className="h-10 w-20" />
+            </div>
+          ))}
+        </div>
+
+        {/* Tabs */}
+        <div className="flex gap-3 mb-8">
+          {[...Array(4)].map((_, i) => (
+            <Skeleton
+              key={i}
+              className="h-10 w-28 rounded-full"
+            />
+          ))}
+        </div>
+
+        {/* Booking Cards */}
+        <div className="space-y-6">
+          {[...Array(3)].map((_, i) => (
+            <div
+              key={i}
+              className="bg-white/40 border border-black/5 rounded-4xl p-8"
+            >
+              <div className="flex justify-between items-center">
+
+                <div className="flex gap-5 items-center">
+                  <Skeleton className="w-16 h-16 rounded-2xl" />
+
+                  <div>
+                    <Skeleton className="h-7 w-44 mb-3" />
+                    <Skeleton className="h-4 w-52" />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-6">
+                  <div>
+                    <Skeleton className="h-6 w-24 mb-2" />
+                    <Skeleton className="h-4 w-16" />
+                  </div>
+
+                  <Skeleton className="h-12 w-36 rounded-2xl" />
+                </div>
+
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+  );
 
   const upcomingBookings = bookings.filter(
   booking =>
