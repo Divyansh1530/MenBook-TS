@@ -15,11 +15,15 @@ function Dashboard({
     )
   }
 
-  return (
+  if (user?.role === "user") {
+    return (
     <UserDashboard
       user={user}
     />
   )
+  }
+
+  
 }
 
 export default Dashboard

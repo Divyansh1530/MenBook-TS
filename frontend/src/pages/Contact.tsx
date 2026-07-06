@@ -26,8 +26,8 @@ function ContactPage() {
 
       <div className="relative mx-auto max-w-7xl px-6 py-20 md:py-28">
         <div className="max-w-3xl">
-          <p className="text-xs uppercase tracking-widest text-muted-foreground">Contact</p>
-          <h1 className="mt-4 font-display hero-heading leading-[1.15] tracking-tight transform scale-y-[1.2] origin-left text-[clamp(2.5rem,4.5vw,5rem)]">Say hello.</h1>
+          <p className="text-xs uppercase tracking-widest">Contact</p>
+          <h1 className="mt-4 hero-heading leading-[1.15] tracking-tight transform scale-y-[1.2] origin-left text-[clamp(2.5rem,4.5vw,5rem)]">Say hello.</h1>
           <p className="mt-6 text-lg text-[#5e534a] leading-relaxed max-w-xl">
             Questions about booking, becoming a mentor, or just want to share feedback? We read every message.
           </p>

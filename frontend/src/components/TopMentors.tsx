@@ -5,6 +5,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import type { Mentor } from '../types/mentor';
 import type { MentorsResponse } from '../types/api';
+import {toast} from 'sonner'
 
 function TopMentors() {
   const [mentors, setMentors] = useState<Mentor[]>([]);
@@ -31,8 +32,10 @@ function TopMentors() {
         setMentors(response.data.data.mentors);
         // setTotalPages(response.data.data.totalPages)
       } catch (error) {
-        const err = error as AxiosError
-        console.log(err);
+        const err = error as AxiosError<{message:string}>
+        toast.error(
+        err.response?.data?.message
+       );
       } finally {
         setLoading(false);
       }
@@ -83,7 +86,7 @@ function TopMentors() {
                   <div className="flex gap-4 items-center">
                     <img
                       src={
-                        mentor.avatar || 'https://via.placeholder.com/100'
+                        mentor.avatar || 'default-avatar.png'
                       }
                       alt={mentor.name}
                       className='w-14 h-14 rounded-2xl object-cover border border-black/10'

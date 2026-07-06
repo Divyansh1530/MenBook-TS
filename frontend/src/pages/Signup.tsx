@@ -7,21 +7,33 @@ import { FcGoogle } from 'react-icons/fc'
 import { Eye , EyeOff } from 'lucide-react'
 import PageTransition from '../components/PageTransition.tsx'
 
+interface FormErrors {
+    name?:string;
+    email?:string;
+    password?:string;
+    pricing?:string;
+  }
+
+  interface SignupFormData {
+    name:string;
+    email:string;
+    password:string;
+    role:"user" | "mentor";
+    title:string;
+    bio:string;
+    expertise:string;
+    pricing:string;
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_\-+=])[A-Za-z\d@$!%*?&#^()_\-+=]{8,}$/
+
 function Signup() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const roleFromURL = searchParams.get("role")
 
-  interface FormErrors {
-    name?:string;
-    email?:string;
-    password?:string;
-  }
-
   const [errors , setErrors] = useState<FormErrors>({})
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_\-+=])[A-Za-z\d@$!%*?&#^()_\-+=]{8,}$/
   
   const validateForm = () => {
     const newErrors: FormErrors = {};
@@ -39,6 +51,10 @@ function Signup() {
         "Minimum 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special character.";
     }
 
+    if (Number(formData.pricing) < 0) {
+      newErrors.pricing = "Price cannot be negative"
+    }
+
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
@@ -47,18 +63,6 @@ function Signup() {
   const [serverError , setServerError] = useState("")
   const [showPassword , setShowPassword] = useState(false)
 
-  interface SignupFormData {
-    name:string;
-    email:string;
-    password:string;
-    role:"user" | "mentor";
-    title:string;
-    bio:string;
-    expertise:string;
-    pricing:string;
-  }
-
-    
   const [formData, setFormData] = useState<SignupFormData>({
     name: "",
     email: "",
@@ -175,7 +179,7 @@ function Signup() {
             }}
              className="flex bg-[#fefcf8] items-center justify-center gap-3 w-full rounded-2xl border border-gray-300 py-3 font-medium transition cursor-pointer"
                       ><FcGoogle size={22}/>
-                      <span>Continue With Google</span>
+                      <span>Sign up With Google</span>
           </button>
           <div className='text-center'>
             OR
@@ -291,7 +295,13 @@ function Signup() {
                 </div>
                 <div>
                   <label className="block text-[10px] font-normal tracking-[0.15em] text-black/50 uppercase mb-2">PRICE</label>
-                  <input type="number" name="pricing" value={formData.pricing} onChange={handleChange} className="w-full bg-white/40 border border-black/10 rounded-2xl px-5 py-4 outline-none focus:border-black/30 transition-all font-sans" />
+                  <input type="number" name="pricing" value={formData.pricing} onChange={handleChange} className={`w-full bg-white/40 border rounded-2xl px-5 py-4 outline-none transition-all font-sans
+                  ${
+                    errors.pricing
+                    ? "border border-red-500"
+                    : "border border-black/10 focus:border-black/30 "
+                }`}
+                     />
                 </div>
               </div>
             </div>

@@ -15,7 +15,7 @@ function Privacy() {
       <div className="absolute inset-0 grain opacity-50 pointer-events-none" />
       <div className="relative z-10 mx-auto max-w-3xl px-6 py-20 md:py-28">
         <p className="text-xs uppercase tracking-widest text-[#5e534a]">Legal</p>
-        <h1 className="mt-4 font-display text-[clamp(2.5rem,6vw,4rem)] hero-heading leading-[1.15] tracking-tighter transform scale-y-[1.3] origin-left">Privacy Policy</h1>
+        <h1 className="mt-4 text-[clamp(2.5rem,6vw,4rem)] hero-heading leading-[1.15] tracking-tighter transform scale-y-[1.3] origin-left">Privacy Policy</h1>
         <p className="mt-6 text-[#5e534a] leading-relaxed">
           This policy explains what data MenBook collects, how we use it, and how we keep it safe. If you have any questions, contact us at <a href="mailto:menbook.studio@gmail.com" className="text-orange-700 hover:underline">menbook.studio@gmail.com</a>.
         </p>

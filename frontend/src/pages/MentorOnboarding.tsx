@@ -4,6 +4,7 @@ import api from '../api/axios'
 import { AxiosError } from 'axios'
 import type { NavBarProps } from '../types/user'
 import PageTransition from '../components/PageTransition'
+import {toast} from 'sonner'
 
 function MentorOnboarding({
     user,
@@ -46,8 +47,8 @@ function MentorOnboarding({
                 }
             )
             setUser(response.data.data)
-        }catch(error){
-            console.log(error)
+        }catch{
+           //
         }finally{
             setLoading(false)
         }
@@ -124,13 +125,13 @@ function MentorOnboarding({
 
         setUser(response.data.data)
 
-      alert('Profile completed successfully')
+      toast.success('Profile completed successfully')
 
       navigate('/dashboard')
 
     } catch (error) {
       const err = error as AxiosError<{message:string}>  
-      alert(
+      toast.error(
         err.response?.data?.message ||
         'Failed to complete profile'
       )

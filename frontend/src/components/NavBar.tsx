@@ -54,10 +54,6 @@ function NavBar({
     }
   };
 
-  // Helper functions for dynamic routing based on role
-  const getDashboardLink = () => '/dashboard'
-  const getProfileLink = () => '/profile'; // Both roles use the same /profile route
-
   return (
     <nav className="sticky top-0 w-full bg-[#fdfaf3]/90 backdrop-blur-sm border-b border-black/5 px-6 md:px-12 z-9999">
       <div className="max-w-7xl mx-auto flex justify-between h-16 items-center">
@@ -121,7 +117,7 @@ function NavBar({
                   </div>
 
                   <Link 
-                  to={getDashboardLink()} 
+                  to="/dashboard" 
                   onClick={() => setProfileOpen(false)} 
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-white transition-colors text-gray-700">
                   <LayoutDashboard 
@@ -133,7 +129,7 @@ function NavBar({
                   </span>
                   </Link>
                   <Link 
-                  to={getProfileLink()} 
+                  to="/profile" 
                   onClick={() => setProfileOpen(false)} 
                   className="flex items-center gap-3 p-3 rounded-xl hover:bg-white transition-colors text-gray-700">
                     <User 
@@ -248,7 +244,7 @@ function NavBar({
                     Availability
                     </Link>
               )}
-              <Link to={getDashboardLink()} className="flex items-center text-lg font-medium text-gray-800 space-x-1" onClick={() => setMenuOpen(false)}><LayoutDashboard 
+              <Link to="/dashboard" className="flex items-center text-lg font-medium text-gray-800 space-x-1" onClick={() => setMenuOpen(false)}><LayoutDashboard 
                   size={18} 
                   className="text-gray-400" 
                   />
@@ -256,7 +252,7 @@ function NavBar({
                     Dashboard
                   </span>
                   </Link>
-              <Link to={getProfileLink()} className="flex items-center text-lg font-medium text-gray-800 space-x-1" onClick={() => setMenuOpen(false)}><User
+              <Link to="/profile" className="flex items-center text-lg font-medium text-gray-800 space-x-1" onClick={() => setMenuOpen(false)}><User
                   size={18} 
                   className="text-gray-400" 
                   />

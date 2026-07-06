@@ -19,7 +19,7 @@ function About() {
 
       <div className="relative mx-auto max-w-7xl px-6 py-20 md:py-28">
         <div className="max-w-3xl">
-          <p className="text-xs uppercase tracking-widest text-muted-foreground">About MenBook</p>
+          <p className="text-xs uppercase tracking-widest">About MenBook</p>
             <h1 className="mt-4 text-[clamp(2.5rem,4.5vw,5rem)] hero-heading leading-[1.15] md:leading-none tracking-tighter transform scale-y-[1.2] origin-left">
             A quiet place to find the right person to talk to.
           </h1>
@@ -33,16 +33,16 @@ function About() {
             </p>
           </div>
           <div className="rounded-2xl border border-gray-300 bg-[#fffbf6] p-8">
-            <h2 className="font-display text-xl font-normal hero-heading leading-[1.15] tracking-tighter transform scale-y-[1.2] origin-left">The problem it solves</h2>
-            <p className="mt-4 text-muted-foreground leading-relaxed text-[#5e534a]">
+            <h2 className="text-xl font-normal hero-heading leading-[1.15] tracking-tighter transform scale-y-[1.2] origin-left">The problem it solves</h2>
+            <p className="mt-4 leading-relaxed text-[#5e534a]">
               Finding the right advice is noisy. Most platforms bury you in profiles, inflated bios, and aggressive sales funnels. MenBook strips that away. One clean profile, one calendar, one honest conversation.
             </p>
           </div>
         </div>
 
         <div className="mt-20">
-          <p className="text-xs uppercase tracking-widest text-muted-foreground">How it works</p>
-          <h2 className="mt-2 font-display text-3xl md:text-4xl hero-heading leading-[1.15] tracking-tighter transform scale-y-[1.2] origin-left">Three steps to a conversation that matters.</h2>
+          <p className="text-xs uppercase tracking-widest">How it works</p>
+          <h2 className="mt-2 text-3xl md:text-4xl hero-heading leading-[1.15] tracking-tighter transform scale-y-[1.2] origin-left">Three steps to a conversation that matters.</h2>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
             <StepCard
               n="01"
@@ -65,10 +65,10 @@ function About() {
           </div>
         </div>
 
-        <div className="mt-20 rounded-3xl border border-border bg-[#1a0f06] px-8 py-14 md:p-16">
+        <div className="mt-20 rounded-3xl bg-[#1a0f06] px-8 py-14 md:p-16">
           <div className="max-w-2xl">
             <p className="text-xs text-[#a19a91] uppercase tracking-widest">Why we built it</p>
-            <h2 className="mt-3 font-display hero-heading leading-[1.15] tracking-tighter transform scale-y-[1.2] origin-left text-3xl text-[#fbf6ee] md:text-4xl">We believe mentorship should feel human, not transactional.</h2>
+            <h2 className="mt-3 hero-heading leading-[1.15] tracking-tighter transform scale-y-[1.2] origin-left text-3xl text-[#fbf6ee] md:text-4xl">We believe mentorship should feel human, not transactional.</h2>
             <p className="mt-6 leading-relaxed text-[#cec8bf]">
               MenBook was built because the best conversations we ever had came from people a few steps ahead of us. We wanted to make those conversations easier to find, safer to book, and simple to keep coming back to.
             </p>
@@ -76,11 +76,11 @@ function About() {
         </div>
 
         <div className="mt-20 flex flex-wrap items-center gap-4">
-          <Link to="/browse-mentors" className="group inline-flex items-center gap-2 rounded-full bg-[#1a0f06] px-6 py-3 text-sm text-[#fbf6ee] hover:bg-accent transition-colors">
+          <Link to="/browse-mentors" className="group inline-flex items-center gap-2 rounded-full bg-[#1a0f06] px-6 py-3 text-sm text-[#fbf6ee] transition-colors">
             Browse mentors
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Link>
-          <Link to="/signup" className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-6 py-3 text-sm hover:bg-muted transition-colors">
+          <Link to="/signup" className="inline-flex items-center gap-2 rounded-full border border-gray-300 px-6 py-3 text-sm transition-colors">
             Become a mentor
           </Link>
         </div>

@@ -27,7 +27,7 @@ function MentorAvailability({
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
   ]
 
-  if (user && user.role !== "mentor") {
+  if (user?.role !== "mentor") {
     return <Navigate to="/" />
   }
 
@@ -39,8 +39,10 @@ function MentorAvailability({
       })
       setAvailability(response.data.data)
     } catch (error) {
-      const err = error as AxiosError  
-      console.log(err)
+      const err = error as AxiosError<{message:string}>  
+      toast.error(
+        err.response?.data?.message
+    );
     }
     finally{
       setLoading(false)
@@ -86,8 +88,8 @@ function MentorAvailability({
       toast.success('Availability created successfully')
       fetchAvailability()
     } catch (error) {
-      const err = error as AxiosError<{message:string}>
-      toast.error(err.response?.data?.message || 'Failed to create availability')
+      // const err = error as AxiosError
+      toast.error('Failed to create availability')
     }
   }
 
@@ -145,8 +147,8 @@ function MentorAvailability({
       slotDuration: 30,
       bufferTime: 10,
     });
-  } catch (error) {
-    console.log(error);
+  } catch {
+    //
   }
 };
   

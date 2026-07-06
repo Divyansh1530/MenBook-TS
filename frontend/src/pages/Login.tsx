@@ -6,6 +6,7 @@ import { AxiosError } from 'axios';
 import {FcGoogle} from 'react-icons/fc'
 import {toast} from 'sonner'
 import PageTransition from '../components/PageTransition';
+import { Eye,EyeOff } from 'lucide-react';
 
 interface LoginProps {
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -26,6 +27,8 @@ function Login({
     password: ''
   })
   const [loading, setLoading] = useState(false)
+  const [showPassword , setShowPassword] = useState(false)
+
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -74,7 +77,7 @@ function Login({
           href={`${import.meta.env.VITE_API_URL}/users/auth/google/login`}
           className="flex bg-[#fefcf8] items-center justify-center gap-3 w-full rounded-2xl border border-gray-300 py-3 font-medium transition"
           ><FcGoogle size={22}/>
-          <span>Continue With Google</span>
+          <span>Log in With Google</span>
           </a>
           <div className='flex items-center py-4 justify-center hero-heading font-serif text-md text-[#1a1a1a] mb-2 tracking-normal transform scale-y-[1.1] origin-left'>
             OR
@@ -96,20 +99,29 @@ function Login({
             <label className="block text-[10px] font-normal tracking-[0.15em] text-black/50 uppercase mb-2">
               PASSWORD
             </label>
+            <div className='relative'>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
               className="w-full bg-white/40 border border-black/10 rounded-2xl px-5 py-4 outline-none focus:border-black/30 transition-all font-sans"
               required
             />
+            <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+                </div>
           </div>
           
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#120f0a] text-white py-2 rounded-full font-medium text-lg hover:bg-black transition-all active:scale-[0.98] mt-4"
+            className="w-full bg-[#120f0a] text-white py-3 rounded-full font-medium text-lg hover:bg-black transition-all active:scale-[0.98] mt-4"
           >
             {loading ? 'Logging in...' : 'Log in'}
           </button>

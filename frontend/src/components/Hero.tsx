@@ -21,9 +21,8 @@ function Hero() {
         response.data.data.totalMentors
       )
 
-    } catch (error) {
-
-      console.log(error)
+    } catch {
+        //
     }
   }
 

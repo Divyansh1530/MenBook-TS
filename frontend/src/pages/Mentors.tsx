@@ -47,14 +47,18 @@ function Mentors({
     try {
       const response = await api.get<{data:Mentor}>(`/users/mentors/${id}`);
       setMentor(response.data.data);
-    } catch (error) { console.log(error); }
+    } catch {
+      toast.error("Failed to Fetch Mentor")
+     }
   };
 
   const fetchReviews = async () => {
     try {
       const response = await api.get<{data:Review[]}>(`/review/mentors/${id}`);
       setReviews(response.data.data);
-    } catch (error) { console.log(error); }
+    } catch { 
+      toast.error("Failed to Fetch Reviews")
+     }
   };
 
   const fetchSlots = async (date:string) => {
@@ -74,9 +78,8 @@ function Mentors({
         )
       })
       setSlots(filteredSlots);
-    } catch (error) 
-    { 
-      console.log(error)
+    } catch  { 
+      toast.error("Failed to Fetch Slots")
    }
   };
 
@@ -157,7 +160,9 @@ function Mentors({
         theme: { color: '#e94e36' }
       };
       new window.Razorpay(options).open();
-    } catch (error) {console.log(error); }
+    } catch {
+      //
+    }
   };
 
   if (loading) {

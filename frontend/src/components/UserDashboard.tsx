@@ -7,6 +7,7 @@ import type { UserDashboardProps } from '../types/user'
 import type {Booking} from '../types/booking'
 import type { Review } from '../types/review'
 import Skeleton from './Skeleton'
+import {toast} from 'sonner'
 
 function UserDashboard({
   user
@@ -47,7 +48,7 @@ function UserDashboard({
         rating,
         comment
       }, { withCredentials: true })
-      alert('Review submitted successfully')
+      toast.success('Review submitted successfully')
       setSelectedBooking(null)
       setEditingReview(null)
       setRating(5)
@@ -55,7 +56,7 @@ function UserDashboard({
       fetchBookings()
     } catch (error) {
       const err = error as AxiosError<{message:string}>  
-      alert(err.response?.data?.message || 'Failed to submit review')
+      toast.error(err.response?.data?.message || 'Failed to submit review')
     }
   }
 
@@ -76,7 +77,7 @@ function UserDashboard({
       }
     )
 
-    alert('Review updated successfully')
+    toast.success('Review updated successfully')
 
     setEditingReview(null)
 
@@ -90,7 +91,7 @@ function UserDashboard({
 
   } catch (error) {
     const err = error as AxiosError<{message:string}>
-    alert(
+    toast.error(
       err.response?.data?.message ||
       'Failed to update review'
     )
@@ -116,13 +117,13 @@ function UserDashboard({
       }
     )
 
-    alert('Review deleted successfully')
+    toast.success('Review deleted successfully')
 
     fetchBookings()
 
   } catch (error) {
     const err = error as AxiosError<{message:string}>
-    alert(
+    toast.error(
       err.response?.data?.message ||
       'Failed to delete review'
     )
@@ -321,7 +322,7 @@ const totalInvested = bookings.reduce(
 
           {displayedBookings.length === 0 ? (
             <div className="border-2 border-dashed border-black/5 rounded-[2.5rem] md:rounded-4xl p-10 md:p-20 text-center">
-              <p className="text-gray-500">Nothing scheduled yet. <Link to="/mentors" className="text-red-500 font-medium hover:underline">Browse mentors</Link></p>
+              <p className="text-gray-500">Nothing scheduled yet. <Link to="/browse-mentors" className="text-red-500 font-medium hover:underline">Browse mentors</Link></p>
             </div>
           ) : (
             <div className="grid gap-4 md:gap-6">
@@ -330,7 +331,7 @@ const totalInvested = bookings.reduce(
                   <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
                     <div className="flex items-center gap-4 md:gap-6">
                       <img 
-                        src={booking.mentorId?.avatar || 'https://via.placeholder.com/100'} 
+                        src={booking.mentorId?.avatar || '/default-avatar.png'} 
                         className="w-12 h-12 md:w-16 md:h-16 rounded-xl md:rounded-2xl object-cover grayscale-[0.5]" 
                         alt="mentor" 
                       />

@@ -29,8 +29,10 @@ function MentorDashboard({
       });
       setBookings(response.data.data);
     } catch (error) {
-      const err = error as AxiosError  
-      console.log(err);
+      const err = error as AxiosError<{message:string}>  
+      toast.error(
+        err.response?.data?.message
+    );
     } finally {
       setLoading(false);
     }

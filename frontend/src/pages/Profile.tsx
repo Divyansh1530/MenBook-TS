@@ -8,7 +8,8 @@ import {
   FiAward, 
   FiDollarSign, 
   FiFileText, 
-  FiTag
+  FiTag,
+  FiUser
 } from 'react-icons/fi';
 import api from '../api/axios';
 import { AxiosError } from 'axios';
@@ -17,6 +18,17 @@ import type { PasswordForm, ProfileForm } from '../types/profile';
 import {toast} from 'sonner'
 import PageTransition from '../components/PageTransition';
 import Skeleton from '../components/Skeleton';
+
+interface UpdateProfilePayload {
+    name: string;
+    bio?: string;
+    title?: string;
+    expertise?: string[];
+    pricing?: string;
+    experience?: string;
+    linkedin?: string;
+    portfolio?: string;
+}
 
 function Profile() {
   const [user, setUser] = useState<User | null>(null);
@@ -55,8 +67,8 @@ function Profile() {
         linkedin: currentUser.mentorProfile?.linkedin || '',
         portfolio: currentUser.mentorProfile?.portfolio || ''
       });
-    } catch (error) {
-      console.log(error);
+    } catch {
+      //
     } finally {
       setLoading(false);
     }
@@ -68,17 +80,6 @@ function Profile() {
 
   const handleChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setFormData({ ...formData, [e.target.name]: e.target.value });
   const handlePasswordChange = (e:ChangeEvent<HTMLInputElement>) => setPasswordData({ ...passwordData, [e.target.name]: e.target.value });
-
-  interface UpdateProfilePayload {
-    name: string;
-    bio?: string;
-    title?: string;
-    expertise?: string[];
-    pricing?: string;
-    experience?: string;
-    linkedin?: string;
-    portfolio?: string;
-}
 
   const handleUpdateProfile = async () => {
     try {
@@ -139,14 +140,12 @@ function Profile() {
         <section className="min-h-screen bg-[#fdfaf3] py-24 px-4 sm:px-6 md:px-12 lg:px-24">
           <div className="max-w-7xl mx-auto xl:px-20">
 
-            {/* Header */}
             <Skeleton className="h-3 w-24 mb-5" />
             <Skeleton className="h-16 w-72 mb-6" />
             <Skeleton className="h-6 w-80 mb-14" />
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-              {/* Left */}
               <div className="lg:col-span-4 space-y-8">
 
                 <div className="bg-white/40 border border-black/10 rounded-[40px] p-10 flex flex-col items-center">
@@ -176,7 +175,6 @@ function Profile() {
 
               </div>
 
-              {/* Right */}
               <div className="lg:col-span-8 bg-white/40 border border-black/10 rounded-[40px] p-12">
 
                 <Skeleton className="h-10 w-56 mb-10" />
@@ -293,6 +291,7 @@ function Profile() {
                   <InputGroup icon={<FiTag size={14}/>} label="TITLE" name="title" placeholder="Therapist" value={formData.title} onChange={handleChange} />
                   <InputGroup icon={<FiBriefcase size={14}/>} label="EXPERIENCE" name="experience" placeholder="e.g. 8 years at Google" value={formData.experience} onChange={handleChange} />
                   <InputGroup icon={<FiLinkedin size={14}/>} label="LINKEDIN" name="linkedin" placeholder="https://linkedin.com/in/..." value={formData.linkedin} onChange={handleChange} />
+                  <InputGroup icon={<FiUser size={14}/>} label="PORTFOLIO" name="portfolio" placeholder="https://portfolio.com/in/..." value={formData.portfolio} onChange={handleChange} />
                   <InputGroup icon={<FiAward size={14}/>} label="EXPERTISE" name="expertise" placeholder="React, System Design, Career" value={formData.expertise} onChange={handleChange} />
                   <InputGroup icon={<FiDollarSign size={14}/>} label="HOURLY RATE (USD)" name="pricing" type="number" value={formData.pricing} onChange={handleChange} />
                 </div>
@@ -346,7 +345,7 @@ interface InputGroupProps {
     icon?: ReactNode;
 }
 
-// Helper Sub-component
+
 const InputGroup = ({ label, name, value, onChange, type = "text", placeholder = "", icon = null }:InputGroupProps) => (
   <div className="space-y-2">
     <label className="flex items-center gap-2 text-[10px] font-bold tracking-[0.15em] text-gray-400 uppercase">

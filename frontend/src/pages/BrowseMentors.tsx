@@ -7,6 +7,7 @@ import type { Mentor } from '../types/mentor';
 import type { BrowseMentorsResponse } from '../types/api';
 import PageTransition from '../components/PageTransition';
 import Skeleton from '../components/Skeleton';
+import {toast} from 'sonner'
 
 function BrowseMentors() {
   const [mentors, setMentors] = useState<Mentor[]>([]);
@@ -92,8 +93,10 @@ useEffect(() => {
 
           setTotalPages(response.data.data.totalPages)
       } catch (error) {
-        const err = error as AxiosError
-        console.log(err);
+        const err = error as AxiosError<{message:string}>
+        toast.error(
+        err.response?.data?.message
+    );
       } finally {
         setLoading(false);
       }
@@ -343,7 +346,7 @@ useEffect(() => {
                     <div className="flex gap-3 sm:gap-4 items-center">
                       <div >
                         <img 
-                        src={mentor.avatar || 'https://placehold.co/100'} 
+                        src={mentor.avatar || '/default-avatar.png'} 
                         alt={mentor.name}
                         className="w-14 h-14 rounded-2xl object-cover border border-black/10"
                         />
