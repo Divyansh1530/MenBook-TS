@@ -35,16 +35,8 @@ const sendEmail = async ({
             html
         })
 
-        console.log(
-            "Email sent successfully"
-        )
-
-    } catch (error:unknown) {
-
-        console.log(
-            "Email Error:",
-            error
-        )
+    } catch  {
+        //
     }
 }
 

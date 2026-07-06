@@ -14,14 +14,23 @@ const changeCurrentPassword = asyncHandler(async(req,res) => {
 
     const user = await User.findById(req.user?._id)
 
+    if (!user) {
+      throw new ApiError(404,"User not found")
+    }
+
     const isPasswordCorrect = await user?.isPasswordCorrect(oldPassword)
 
     if (!isPasswordCorrect) {
         throw new ApiError(400,"Invalid old password")
     }
 
-    user!.password = newPassword
-    await user?.save({validateBeforeSave:false})
+    user.password = newPassword
+
+    if (newPassword.length<8) {
+      throw new ApiError(401,"Password should have minimum 8 char")
+    }
+
+    await user?.save()
 
     return res
     .status(200)
@@ -112,7 +121,7 @@ const updateAccountDetails = asyncHandler(async(req,res) => {
 
     }
 
-    await user.save({validateBeforeSave: false})
+    await user.save()
 
     const updatedUser = await User.findById(user._id).select(
         "-password -refreshToken"

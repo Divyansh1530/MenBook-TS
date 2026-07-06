@@ -28,12 +28,8 @@ const generateAccessAndRefreshTokens = async(userId:string):Promise<TokenRespons
         accessToken,
         refreshToken
     }
-    } catch (error : unknown) {
-        console.log(error)
-
-        if (error instanceof Error) {
-            throw new ApiError(500,error.message)
-        }
+    } catch {
+        //
     }
     throw new ApiError(500,"Failed to generate tokens")
 
@@ -87,7 +83,7 @@ const registerUser = asyncHandler(async(req,res) => {
     })
 
     if (existedUser) {
-        throw new ApiError(409, "User with email or name already exists")
+        throw new ApiError(409, "User with email already exists")
     }
 
     const avatarLocalPath = req.file?.path;
@@ -166,7 +162,7 @@ const loginUser = asyncHandler(async(req,res) => {
     const {email, password} = req.body as LoginUserBody
 
     if (!email) {
-        throw new ApiError(400, "name or email is required")
+        throw new ApiError(400, "email is required")
     }
     
     const user = await User.findOne({
@@ -212,7 +208,7 @@ const logoutUser = asyncHandler(async(req,res) => {
     req.user!._id,
         {
             $unset: {
-                refreshToken: 1 // this removes the field from document
+                refreshToken: 1 
             }
         },
         {
@@ -299,13 +295,17 @@ const googleAuthCallback =asyncHandler(async (req, res) => {
 
         const user = req.user as UserDocumentWithRedirect
 
-        const accessToken = user!.generateAccessToken()
+        if (!user) {
+            throw new ApiError(404,"User not found")
+        }
 
-        const refreshToken = user!.generateRefreshToken()
+        const accessToken = user.generateAccessToken()
 
-        user!.refreshToken = refreshToken
+        const refreshToken = user.generateRefreshToken()
 
-        await user!.save({
+        user.refreshToken = refreshToken
+
+        await user.save({
             validateBeforeSave: false
         })
 
@@ -315,10 +315,10 @@ const googleAuthCallback =asyncHandler(async (req, res) => {
             sameSite: "lax"
         }
 
-        const redirect = user!.oauthRedirect ||
+        const redirect = user.oauthRedirect ||
         (
-            user!.role === "mentor" &&
-            !user!.isProfileComplete
+            user.role === "mentor" &&
+            !user.isProfileComplete
             ? "/mentor-onboarding"
             : "/"
         )
@@ -327,7 +327,7 @@ const googleAuthCallback =asyncHandler(async (req, res) => {
         .cookie("accessToken",accessToken, options)
         .cookie("refreshToken",refreshToken,options)
         .redirect(
-            `http://localhost:5173${redirect}`
+            `${process.env.CORS_ORIGIN}${redirect}`
         )
   
 })

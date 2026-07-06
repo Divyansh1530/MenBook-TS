@@ -2,9 +2,11 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {User} from '../models/user.model.js' 
+import type {QueryFilter} from "mongoose";
+import type { SortOrder } from "mongoose";
 
 const getSingleMentor = asyncHandler(async(req,res) => {
-    const mentor = await User.findById({
+    const mentor = await User.findOne({
         _id:req.params.id,
         role:"mentor"
    })
@@ -38,7 +40,7 @@ const getAllMentors = asyncHandler(async (req, res) => {
 
     const {search , specialization , minPrice , maxPrice , rating , sortBy , order} = req.query as GetMentorsQuery
 
-    let query:any = {
+    let query:QueryFilter<User> = {
         role: "mentor"
     }
 
@@ -106,34 +108,17 @@ const getAllMentors = asyncHandler(async (req, res) => {
             }
         }
 
-        let sortOptions:any = {}
+        let sortOptions:Record<string,SortOrder> = {}
 
-        if (sortBy === "price") {
+        const sortMap = {
+            price: "mentorProfile.pricing",
+            rating: "mentorProfile.avgRating",
+            experience: "mentorProfile.experience",
+        };
 
-            sortOptions[
-                "mentorProfile.pricing"
-            ] = order === "desc"
-                ? -1
-                : 1
-            }
-
-        if (sortBy === "rating") {
-
-            sortOptions[
-                 "mentorProfile.avgRating"
-            ] = order === "desc"
-                ? -1
-                : 1
-            }
-
-         if (sortBy === "experience") {
-
-            sortOptions[
-                "mentorProfile.experience"
-            ] = order === "desc"
-                ? -1
-                : 1
-            }
+        if (sortBy) {
+            sortOptions[sortMap[sortBy]] = order === "desc" ? -1 : 1;
+        }
 
         const page = Number(req.query.page) || 1
         const limit = Number(req.query.limit) || 9

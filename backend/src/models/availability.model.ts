@@ -20,11 +20,15 @@ const availabilitySchema = new Schema<Availability>({
         },
         startTime:{
             type:Number,
-            required:true
+            required:true,
+            min:0,
+            max:1439
         },
         endTime:{
             type:Number,
-            required:true
+            required:true,
+            min:0,
+            max:1439
         },
         isBlocked:{
             type:Boolean,

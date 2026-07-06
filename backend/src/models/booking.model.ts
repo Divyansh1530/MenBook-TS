@@ -13,9 +13,7 @@ interface Booking {
     paymentStatus?:PaymentStatus;
     amount:number;
     meetingLink?:string | null;
-    cancelReason?:string | null;
     expiresAt?:Date | null;
-    reminderSent?:boolean
     bookingDate:Date
     createdAt?:Date
     updatedAt?:Date
@@ -59,10 +57,6 @@ const bookingSchema = new Schema<Booking>({
         required:true
     },
     meetingLink:{
-        type:String,
-        default:null
-    },
-    cancelReason:{
         type:String,
         default:null
     },

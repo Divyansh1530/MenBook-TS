@@ -50,11 +50,15 @@ const paymentSchema = new Schema<Payment>({
     },
     paymentId:{
         type:String,
-        default:null
+        default:null,
+        unique:true,
+        sparse:true
     },
     orderId:{
         type:String,
-        default:null
+        default:null,
+        unique:true,
+        sparse:true
     },
     signature:{
         type:String,
@@ -64,6 +68,18 @@ const paymentSchema = new Schema<Payment>({
 {
     timestamps:true
 }
+)
+paymentSchema.index(
+    {bookingId:1},
+    {unique:true}
+)
+paymentSchema.index(
+    {paymentId:1},
+    {unique:true,sparse:true}
+)
+paymentSchema.index(
+    {orderId:1},
+    {unique:true,sparse:true}
 )
 
 export const Payment = mongoose.model("Payment" , paymentSchema)

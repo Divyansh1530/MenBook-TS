@@ -90,7 +90,7 @@ const createBooking = asyncHandler(async(req,res) => {
         throw new ApiError(409,"Slot is already Booked")
     }
     
-    if (!mentor.mentorProfile?.pricing) {
+    if (mentor.mentorProfile?.pricing == null) {
         throw new ApiError(400,"Mentor pricing not found")
     }
 
@@ -135,7 +135,9 @@ const getUserBookings = asyncHandler(async(req,res) => {
         bookings.map(async (booking) => {
 
             const review = await Review.findOne({
-                bookingId: booking._id
+                bookingId: {
+                    $in:bookings.map(b=>b._id)
+                }
             })
             .select("rating comment")
 
@@ -193,8 +195,8 @@ const cancelBooking = asyncHandler(async(req,res) => {
         throw new ApiError(404,"Booking Not Found")
     }
 
-    const isUserOwner = booking.mentorId.toString() == req.user!._id.toString()
-    const isMentorOwner = booking.userId.toString() == req.user!._id.toString()
+    const isMentorOwner = booking.mentorId.toString() == req.user!._id.toString()
+    const isUserOwner = booking.userId.toString() == req.user!._id.toString()
 
     if (!isUserOwner && !isMentorOwner) {
         throw new ApiError(403,"You are not allowed to cancel this booking")
@@ -204,11 +206,6 @@ const cancelBooking = asyncHandler(async(req,res) => {
         throw new ApiError(400,"Booking is already cancelled")
     }
 
-    const {cancelReason} = req.body || {}
-
-    if (cancelReason) {
-        booking.cancelReason = cancelReason
-    }
     booking.status = "cancelled"
     booking.expiresAt = null
 
@@ -226,6 +223,10 @@ const markBookingComplete = asyncHandler(async(req,res) => {
     const bookingId = req.params.bookingId as string
 
     const booking = await Booking.findById(bookingId)
+
+    if (!mongoose.Types.ObjectId.isValid(bookingId)) {
+        throw new ApiError(400,"Invalid booking id")
+    }
 
     if (!booking) {
         throw new ApiError(404,"Booking not found")

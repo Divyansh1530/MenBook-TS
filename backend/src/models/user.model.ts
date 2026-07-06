@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 import type { SignOptions } from 'jsonwebtoken'
 import type { HydratedDocument } from "mongoose";
 
-interface MentorProfile {
+export interface MentorProfile {
     title?:string;
     bio?:string;
     expertise?:string[];
@@ -22,13 +22,13 @@ interface UserMethods {
     generateRefreshToken():string
 }
 
-interface User {
+export interface User {
     name:string;
     email:string;
     password?:string;
     avatar?:string;
     timezone:string;
-    role:"user" | "mentor" | "admin";
+    role:"user" | "mentor";
     phone?:string;
     mentorProfile?:MentorProfile;
     refreshToken?:string;
@@ -52,10 +52,12 @@ const userSchema = new Schema<User,mongoose.Model<User>, UserMethods>({
     },
     password:{
         type:String,
-        required:false
+        required:false,
+        minLength:8
     },
     avatar:{
         type:String,
+        default:""
     },
     timezone:{
         type:String,
@@ -65,9 +67,6 @@ const userSchema = new Schema<User,mongoose.Model<User>, UserMethods>({
         type:String,
         enum:["user","mentor","admin"],
         default:"user"
-    },
-    phone:{
-        type:String
     },
     mentorProfile:{
         title:{
