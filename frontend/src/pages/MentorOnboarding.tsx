@@ -66,6 +66,15 @@ function MentorOnboarding({
   }
 
   const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
+    if (
+      !formData.title.trim() ||
+      !formData.bio.trim() ||
+      !formData.expertise.trim() ||
+      !formData.pricing.trim()
+    ) {
+      toast.error("Please fill in all required fields.");
+      return;
+    }
 
     e.preventDefault()
 
@@ -156,38 +165,15 @@ function MentorOnboarding({
 
   }
 
-  if (user?.isProfileComplete) {
-    
-    return(
-        <div className="min-h-screen bg-[#fdfaf3] flex items-center justify-center px-6">
-            <div className='bg-white p-10 rounded-4xl border border-black/10 max-w-lg text-center'>
-                <h1 className='font-serif text-4xl mb-4'> 
-                    Profile already completed
-                </h1>
-
-                <p className='text-gray-500 mb-8'>
-                    You can edit your mentor details anytime from your profile page
-                </p>
-
-                <button
-                onClick={() => navigate("/profile")}
-                className='bg-black text-white px-6 py-3 rounded-full'
-                >
-                    Go to Profile
-                </button>
-            </div>
-        </div>
-    )
-
-  }
+  if (user.isProfileComplete) {
+  return <Navigate to="/profile" replace />;
+}
 
   return (
   <PageTransition>
     <section className="min-h-screen bg-[#fdfaf3] py-24 px-6 md:px-12 lg:px-24">
 
       <div className="max-w-3xl mx-auto">
-
-        {/* HEADER */}
 
         <div className="mb-14">
 
@@ -205,19 +191,15 @@ function MentorOnboarding({
 
         </div>
 
-        {/* FORM */}
-
         <form
           onSubmit={handleSubmit}
-          className="bg-white/40 border border-black/5 rounded-[40px] p-10 space-y-8"
+          className="bg-[rgb(253,250,243)] border border-black/5 rounded-[40px] p-10 space-y-8"
         >
-
-          {/* TITLE */}
 
           <div>
 
             <label className="block text-[10px] tracking-[0.15em] uppercase text-black/50 mb-2">
-              TITLE
+              TITLE<span className="text-red-500">*</span>
             </label>
 
             <input
@@ -225,41 +207,35 @@ function MentorOnboarding({
               name="title"
               value={formData.title}
               onChange={handleChange}
-              placeholder="Therapist"
               required
-              className="w-full bg-[#fbf6ee] border border-black/10 rounded-2xl px-5 py-4 outline-none"
+              className="w-full bg-[#fefcf8] border border-black/10 rounded-2xl px-5 py-4 outline-none"
             />
 
           </div>
 
-          {/* BIO */}
-
           <div>
 
             <label className="block text-[10px] tracking-[0.15em] uppercase text-black/50 mb-2">
-              BIO
+              BIO<span className="text-red-500">*</span>
             </label>
 
             <textarea
               name="bio"
               value={formData.bio}
               onChange={handleChange}
-              placeholder="Tell learners what you help with..."
               required
               rows={5}
-              className="w-full bg-[#fbf6ee] border border-black/10 rounded-2xl px-5 py-4 outline-none resize-none"
+              className="w-full bg-[#fefcf8] border border-black/10 rounded-2xl px-5 py-4 outline-none resize-none"
             />
 
           </div>
-
-          {/* EXPERTISE + PRICING */}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <div>
 
               <label className="block text-[10px] tracking-[0.15em] uppercase text-black/50 mb-2">
-                EXPERTISE
+                EXPERTISE<span className="text-red-500">*</span>
               </label>
 
               <input
@@ -267,9 +243,8 @@ function MentorOnboarding({
                 name="expertise"
                 value={formData.expertise}
                 onChange={handleChange}
-                placeholder="React, Career, Design"
                 required
-                className="w-full bg-[#fbf6ee] border border-black/10 rounded-2xl px-5 py-4 outline-none"
+                className="w-full bg-[#fefcf8] border border-black/10 rounded-2xl px-5 py-4 outline-none"
               />
 
             </div>
@@ -277,7 +252,7 @@ function MentorOnboarding({
             <div>
 
               <label className="block text-[10px] tracking-[0.15em] uppercase text-black/50 mb-2">
-                PRICING
+                PRICING<span className="text-red-500">*</span>
               </label>
 
               <input
@@ -285,16 +260,13 @@ function MentorOnboarding({
                 name="pricing"
                 value={formData.pricing}
                 onChange={handleChange}
-                placeholder="499"
                 required
-                className="w-full bg-[#fbf6ee] border border-black/10 rounded-2xl px-5 py-4 outline-none"
+                className="w-full bg-[#fefcf8] border border-black/10 rounded-2xl px-5 py-4 outline-none"
               />
 
             </div>
 
           </div>
-
-          {/* EXPERIENCE */}
 
           <div>
 
@@ -307,13 +279,10 @@ function MentorOnboarding({
               name="experience"
               value={formData.experience}
               onChange={handleChange}
-              placeholder="5 years at Google"
-              className="w-full bg-[#fbf6ee] border border-black/10 rounded-2xl px-5 py-4 outline-none"
+              className="w-full bg-[#fefcf8] border border-black/10 rounded-2xl px-5 py-4 outline-none"
             />
 
           </div>
-
-          {/* LINKEDIN */}
 
           <div>
 
@@ -326,13 +295,10 @@ function MentorOnboarding({
               name="linkedin"
               value={formData.linkedin}
               onChange={handleChange}
-              placeholder="https://linkedin.com/in/..."
-              className="w-full bg-[#fbf6ee] border border-black/10 rounded-2xl px-5 py-4 outline-none"
+              className="w-full bg-[#fefcf8] border border-black/10 rounded-2xl px-5 py-4 outline-none"
             />
 
           </div>
-
-          {/* PORTFOLIO */}
 
           <div>
 
@@ -345,8 +311,7 @@ function MentorOnboarding({
               name="portfolio"
               value={formData.portfolio}
               onChange={handleChange}
-              placeholder="https://yourportfolio.com"
-              className="w-full bg-[#fbf6ee] border border-black/10 rounded-2xl px-5 py-4 outline-none"
+              className="w-full bg-[#fefcf8] border border-black/10 rounded-2xl px-5 py-4 outline-none"
             />
 
           </div>
@@ -358,8 +323,6 @@ function MentorOnboarding({
               className="w-full text-xs text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-black/5 file:text-black hover:file:bg-black/10"
             />
           </div>
-
-          {/* BUTTON */}
 
           <button
             type="submit"

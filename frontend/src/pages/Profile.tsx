@@ -6,7 +6,6 @@ import {
   FiLinkedin, 
   FiBriefcase, 
   FiAward, 
-  FiDollarSign, 
   FiFileText, 
   FiTag,
   FiUser
@@ -18,6 +17,7 @@ import type { PasswordForm, ProfileForm } from '../types/profile';
 import {toast} from 'sonner'
 import PageTransition from '../components/PageTransition';
 import Skeleton from '../components/Skeleton';
+import { IndianRupee } from 'lucide-react';
 
 interface UpdateProfilePayload {
     name: string;
@@ -288,12 +288,12 @@ function Profile() {
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                  <InputGroup icon={<FiTag size={14}/>} label="TITLE" name="title" placeholder="Therapist" value={formData.title} onChange={handleChange} />
-                  <InputGroup icon={<FiBriefcase size={14}/>} label="EXPERIENCE" name="experience" placeholder="e.g. 8 years at Google" value={formData.experience} onChange={handleChange} />
-                  <InputGroup icon={<FiLinkedin size={14}/>} label="LINKEDIN" name="linkedin" placeholder="https://linkedin.com/in/..." value={formData.linkedin} onChange={handleChange} />
-                  <InputGroup icon={<FiUser size={14}/>} label="PORTFOLIO" name="portfolio" placeholder="https://portfolio.com/in/..." value={formData.portfolio} onChange={handleChange} />
-                  <InputGroup icon={<FiAward size={14}/>} label="EXPERTISE" name="expertise" placeholder="React, System Design, Career" value={formData.expertise} onChange={handleChange} />
-                  <InputGroup icon={<FiDollarSign size={14}/>} label="HOURLY RATE (USD)" name="pricing" type="number" value={formData.pricing} onChange={handleChange} />
+                  <InputGroup icon={<FiTag size={14}/>} label="TITLE" name="title" value={formData.title} onChange={handleChange} />
+                  <InputGroup icon={<FiBriefcase size={14}/>} label="EXPERIENCE" name="experience" value={formData.experience} onChange={handleChange} />
+                  <InputGroup icon={<FiLinkedin size={14}/>} label="LINKEDIN" name="linkedin" value={formData.linkedin} onChange={handleChange} />
+                  <InputGroup icon={<FiUser size={14}/>} label="PORTFOLIO" name="portfolio" value={formData.portfolio} onChange={handleChange} />
+                  <InputGroup icon={<FiAward size={14}/>} label="EXPERTISE" name="expertise" value={formData.expertise} onChange={handleChange} />
+                  <InputGroup icon={<IndianRupee size={14}/>} label="HOURLY RATE (INR)" name="pricing" type="number" value={formData.pricing} onChange={handleChange} />
                 </div>
 
                 <div className="space-y-2">
@@ -304,7 +304,6 @@ function Profile() {
                     name="bio"
                     value={formData.bio}
                     onChange={handleChange}
-                    placeholder="A short bio — what you help with, who you've worked with, your style."
                     className="w-full bg-white/40 border border-black/10 rounded-2xl p-4 sm:p-6 outline-none focus:border-black/30 transition-all font-sans min-h-40"
                   />
                 </div>

@@ -181,7 +181,7 @@ function Signup() {
                       ><FcGoogle size={22}/>
                       <span>Sign up With Google</span>
           </button>
-          <div className='text-center'>
+          <div className='flex items-center justify-center hero-heading font-serif text-md text-[#1a1a1a] mb-3 tracking-normal transform scale-y-[1.1] origin-left'>
             OR
           </div>
           <div>

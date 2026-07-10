@@ -245,22 +245,50 @@ function Mentors({
         </div>
 
         <div className="border-t border-black/5 pt-16">
-          <h2 className="font-serif text-3xl mb-10">Community feedback</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {reviews.map((r) => (
-              <div key={r._id} className="bg-white/40 border border-black/5 rounded-4xl p-8">
-                <div className="flex items-center gap-1 mb-4">
-                  {[...Array(r.rating)].map((_, i) => <Star key={i} size={14} className="fill-red-500 text-red-500" />)}
-                </div>
-                <p className="text-gray-600 mb-6 italic">"{r.comment}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gray-100" />
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{r.userId?.name}</p>
-                </div>
-              </div>
+  <h2 className="font-serif text-3xl mb-10">Community feedback</h2>
+
+  {reviews.length === 0 ? (
+    <div className="bg-white/40 border border-black/5 rounded-4xl p-12 text-center">
+      <h3 className="text-2xl font-serif mb-3">
+       No reviews yet. Book a session and share your experience.
+      </h3>
+      <p className="text-gray-600 max-w-md mx-auto leading-relaxed">
+        This mentor hasn't received any reviews yet.
+        Book a session and be the first to share your experience.
+      </p>
+    </div>
+  ) : (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {reviews.map((r) => (
+        <div
+          key={r._id}
+          className="bg-white/40 border border-black/5 rounded-4xl p-8"
+        >
+          <div className="flex items-center gap-1 mb-4">
+            {[...Array(r.rating)].map((_, i) => (
+              <Star
+                key={i}
+                size={14}
+                className="fill-red-500 text-red-500"
+              />
             ))}
           </div>
+
+          <p className="text-gray-600 mb-6 italic">
+            "{r.comment}"
+          </p>
+
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-gray-100" />
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+              {r.userId?.name}
+            </p>
+          </div>
         </div>
+      ))}
+    </div>
+  )}
+</div>
 
 
         {showBookingModal && (
@@ -316,7 +344,7 @@ function Mentors({
               <div className="flex items-center justify-between pt-8 border-t border-black/5">
                 <div>
                   <span className="font-serif text-3xl text-[#1a1a1a]">₹{mentor!.mentorProfile?.pricing}</span>
-                  <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">60-min session</p>
+                  <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold tracking-widest">1-on-1 Mentoring</p>
                 </div>
                 <button onClick={() => setShowTestPaymentModal(true)} className="bg-[#120f0a] text-white px-8 py-4 rounded-full font-medium hover:bg-black transition-all active:scale-95">
                   {user ? 'Book now' : 'Log in to book'}

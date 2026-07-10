@@ -21,6 +21,8 @@ import { Toaster } from "sonner"
 import {motion} from 'motion/react'
 import { AnimatePresence } from "motion/react"
 import { useLocation } from "react-router-dom"
+import AppLoader from "./components/AppLoader"
+import ScrollToTop from "./components/ScrollToTop"
 
 
 function App() {
@@ -52,9 +54,7 @@ function App() {
 
 if (loading) {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      Loading...
-    </div>
+      <AppLoader />
   );
 }
 
@@ -73,6 +73,7 @@ if (loading) {
         duration: 0.5,
       }}
       className="bg-[#fbf6ee]">
+        <ScrollToTop />
         <NavBar user={user} setUser={setUser} />
         <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
