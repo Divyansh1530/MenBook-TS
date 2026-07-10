@@ -73,13 +73,5 @@ paymentSchema.index(
     {bookingId:1},
     {unique:true}
 )
-paymentSchema.index(
-    {paymentId:1},
-    {unique:true,sparse:true}
-)
-paymentSchema.index(
-    {orderId:1},
-    {unique:true,sparse:true}
-)
 
 export const Payment = mongoose.model("Payment" , paymentSchema)
