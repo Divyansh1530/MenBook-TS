@@ -182,80 +182,8 @@ const verifyPayment = asyncHandler(async(req,res) => {
         )
 })
 
-const razorpayWebhook = asyncHandler(async(req,res) => {
-
-    const razorpaySignature = req.headers["x-razorpay-signature"]
-
-    if (!razorpaySignature) {
-        throw new ApiError(400,"Webhook signature is missing")
-    }
-
-    const expectedSignature = crypto.createHmac("sha256",process.env.RAZORPAY_WEBHOOK_SECRET!)
-    .update(req.body)
-    .digest("hex")
-
-    const isAuthentic = expectedSignature === razorpaySignature
-
-    if (!isAuthentic) {
-        throw new ApiError(400,"Invalid Webhook Signature")
-    }
-
-    const payload = JSON.parse(
-        req.body.toString()
-    )
-
-    if (payload.event === "payment.captured") {
-        
-        const paymentEntity = payload.payload.payment.entity
-        const razorpayOrderId = paymentEntity.order_id
-        const razorpayPaymentId = paymentEntity.id
-        
-        const payment = await Payment.findOne({
-            orderId:razorpayOrderId
-        })
-
-        if (!payment) {
-            return res
-            .status(404)
-            .json({
-                success:false,
-                message:"Payment record not found"
-            })
-        }
-        if (payment.status === "paid") {
-            return res
-            .status(200)
-            .json({
-                success:true,
-                message:"Webhook already processed"
-            })
-        }
-        payment.status = "paid"
-        payment.paymentId = razorpayPaymentId
-
-        await payment.save()
-
-        const booking = await Booking.findById(payment.bookingId)
-
-        if (booking) {
-            booking.status = "confirmed"
-            booking.paymentStatus = "paid"
-            booking.expiresAt=null
-            
-            await booking.save()
-        }
-    }
-    return res
-    .status(200)
-    .json({
-        success:true,
-        message:"Webhook received successfully"
-    })
-
-})
 
 export {
     createOrder,
-    verifyPayment,
-    razorpayWebhook
+    verifyPayment
 }
