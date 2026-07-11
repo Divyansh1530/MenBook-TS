@@ -194,6 +194,29 @@ const updateAvailability = asyncHandler(async(req,res)=> {
     if (availability.bufferTime < 0) {
         throw new ApiError(400,"Buffer time cannot be negative" )
     }
+    
+    const overlappingAvailability = await Availability.findOne({
+        _id: { $ne: availabilityId },   
+
+        mentorId: availability.mentorId,
+
+        dayOfWeek: availability.dayOfWeek,
+
+        startTime: {
+            $lt: availability.endTime
+        },
+
+        endTime: {
+            $gt: availability.startTime
+        }
+    });
+
+    if (overlappingAvailability) {
+    throw new ApiError(
+        409,
+        "Availability overlaps with an existing schedule"
+     );
+    }
 
     await availability.save()
 

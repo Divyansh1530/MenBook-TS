@@ -57,18 +57,12 @@ const createBooking = asyncHandler(async(req,res) => {
         throw new ApiError(400,"Start Time must be less than End Time")
     }
 
-    await Booking.updateMany(
-        {
-            status: "pending",
-            expiresAt: { $lte: new Date() }
-        },
-        {
-            $set: {
-            status: "cancelled",
-            expiresAt: null
-            }
+    await Booking.deleteMany({
+        status: "pending",
+        expiresAt: {
+            $lte: new Date()
         }
-        );
+     });
 
     const existingBooking = await Booking.findOne({
         mentorId,
@@ -131,22 +125,18 @@ const getUserBookings = asyncHandler(async(req,res) => {
     .sort({ startTime:1 })
 
     const bookingsWithReviews = await Promise.all(
+    bookings.map(async (booking) => {
 
-        bookings.map(async (booking) => {
+        const review = await Review.findOne({
+            bookingId: booking._id
+        }).select("rating comment");
 
-            const review = await Review.findOne({
-                bookingId: {
-                    $in:bookings.map(b=>b._id)
-                }
-            })
-            .select("rating comment")
-
-            return {
-                ...booking.toObject(),
-                review
-            }
-        })
-    )
+        return {
+            ...booking.toObject(),
+            review
+        };
+    })
+);
 
     return res
     .status(200)
