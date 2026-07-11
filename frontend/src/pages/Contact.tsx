@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Send , Mail , Github , Linkedin , ArrowRight} from "lucide-react";
+import { Send , Mail , ArrowRight} from "lucide-react";
+import { FiGithub , FiLinkedin } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import PageTransition from "../components/PageTransition";
 
@@ -70,8 +71,8 @@ function ContactPage() {
 
             <div className="space-y-4">
               <ContactLink icon={<Mail className="h-5 w-5" />} label="Email" href="mailto:menbook.studio@gmail.com" value="menbook.studio@gmail.com" />
-              <ContactLink icon={<Github className="h-5 w-5" />} label="GitHub" href="https://github.com/Divyansh1530" value="github.com/Divyansh1530" />
-              <ContactLink icon={<Linkedin className="h-5 w-5" />} label="LinkedIn" href="https://www.linkedin.com/in/divyansh-yadav-4abb87315/" value="linkedin.com/in/divyansh-yadav-4abb87315/" />
+              <ContactLink icon={<FiGithub className="h-5 w-5" />} label="GitHub" href="https://github.com/Divyansh1530" value="github.com/Divyansh1530" />
+              <ContactLink icon={<FiLinkedin className="h-5 w-5" />} label="LinkedIn" href="https://www.linkedin.com/in/divyansh-yadav-4abb87315/" value="linkedin.com/in/divyansh-yadav-4abb87315/" />
             </div>
 
             <div className="rounded-2xl border border-border bg-[#1a0f06]
