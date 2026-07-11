@@ -313,7 +313,7 @@ const googleAuthCallback =asyncHandler(async (req, res) => {
         const options:CookieOptions = {
             httpOnly: true,
             secure: false,
-            sameSite: "lax"
+            sameSite: "none"
         }
 
         const redirect = user.oauthRedirect ||
