@@ -312,7 +312,7 @@ const googleAuthCallback =asyncHandler(async (req, res) => {
 
         const options:CookieOptions = {
             httpOnly: true,
-            secure: false,
+            secure: true,
             sameSite: "none"
         }
 
