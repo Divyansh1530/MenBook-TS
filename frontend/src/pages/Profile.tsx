@@ -248,7 +248,8 @@ function Profile() {
                 {user!.role}
               </span>
             </div>
-            {user?.hasPassword && (       
+
+            {!user?.googleId && (       
             <div className="bg-white/40 border border-black/15 rounded-[40px] py-8 px-6 sm:px-10">
               <h3 className="hero-heading font-serif text-xl text-[#1a1a1a] mb-8 flex items-center gap-3 transform scale-y-[1.2] origin-left tracking-tight">
                 <FiLock size={20} className="text-gray-400"/> Change password

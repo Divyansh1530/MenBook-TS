@@ -9,6 +9,7 @@ export interface User {
   mentorProfile?:MentorProfile;
   isProfileComplete?:boolean
   hasPassword:boolean;
+  googleId:string;
 }
 
 export interface NavBarProps {
