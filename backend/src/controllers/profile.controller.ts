@@ -41,14 +41,22 @@ const changeCurrentPassword = asyncHandler(async(req,res) => {
 })
 
 const getCurrentUser = asyncHandler(async(req,res) => {
-       return res
-       .status(200)
-       .json(new ApiResponse(
-         200,
-         req.user,
-         "User fetched successfully"
-     ))
-})
+    const user = await User.findById(req.user!._id)
+    .select("-password -refreshToken")
+
+    if (!user) {
+        throw new ApiError(404, "User not found")
+    }
+
+    const userData = {
+        ...user.toObject(),
+        hasPassword: Boolean(user.password)
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200,userData,"Current user fetched successfully")
+      )
+    })
 
 interface AccountBody {
     name:string;

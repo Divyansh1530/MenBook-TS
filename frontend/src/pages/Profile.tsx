@@ -248,7 +248,7 @@ function Profile() {
                 {user!.role}
               </span>
             </div>
-
+            {user?.hasPassword && (       
             <div className="bg-white/40 border border-black/15 rounded-[40px] py-8 px-6 sm:px-10">
               <h3 className="hero-heading font-serif text-xl text-[#1a1a1a] mb-8 flex items-center gap-3 transform scale-y-[1.2] origin-left tracking-tight">
                 <FiLock size={20} className="text-gray-400"/> Change password
@@ -265,7 +265,9 @@ function Profile() {
                 </button>
               </div>
             </div>
+          )}
           </div>
+          
 
           <div className="lg:col-span-8 bg-white/40 border border-black/15 rounded-[40px] p-6 sm:p-12">
             <h3 className="font-serif text-2xl sm:text-3xl text-[#1a1a1a] mb-8 sm:mb-10">Personal details</h3>

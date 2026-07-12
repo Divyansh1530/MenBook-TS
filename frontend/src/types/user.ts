@@ -8,6 +8,7 @@ export interface User {
   avatar: string;
   mentorProfile?:MentorProfile;
   isProfileComplete?:boolean
+  hasPassword:boolean;
 }
 
 export interface NavBarProps {
