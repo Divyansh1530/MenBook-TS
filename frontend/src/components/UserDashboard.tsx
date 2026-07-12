@@ -208,8 +208,10 @@ function UserDashboard({
     new Date(booking.startTime) > new Date()
 )
 
+const now = new Date()
+
 const completedBookings = bookings.filter(
-  booking => booking.status === 'completed'
+  booking => booking.status === 'completed' && new Date(booking.endTime) <= now
 )
 
 const cancelledBookings = bookings.filter(
@@ -259,7 +261,6 @@ const totalInvested = bookings.reduce(
           </button>
         </div>
 
-        {/* SNAPSHOT STAT CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 md:gap-6 mb-16 md:mb-20">
           <StatCard icon={<Calendar size={18} />} label="UPCOMING SESSIONS" value={upcomingCount} />
           <StatCard icon={<CheckSquare size={18} />} label="COMPLETED" value={completedCount} />
@@ -343,21 +344,29 @@ const totalInvested = bookings.reduce(
                     
                     <div className="flex flex-row md:flex-row items-center justify-between w-full lg:w-auto gap-4 md:gap-8 border-t lg:border-t-0 pt-4 lg:pt-0">
                       <div className="text-left md:text-right">
-                        <span className={`px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest ${
-                         booking.status === 'completed'
-                            ? 'bg-green-50 text-green-600'
-                            : booking.status === 'cancelled'
-                            ? 'bg-red-50 text-red-500'
-                            : 'bg-orange-50 text-orange-600'
-                        }`}>
-                          {booking.status}
-                        </span>
+                        <span
+                        className={`px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest ${
+                          booking.status === "cancelled"
+                            ? "bg-red-50 text-red-500"
+                            : new Date(booking.endTime) <= new Date()
+                            ? "bg-green-50 text-green-600"
+                            : "bg-orange-50 text-orange-600"
+                        }`}
+                      >
+                        {
+                          booking.status === "cancelled"
+                            ? "cancelled"
+                            : new Date(booking.endTime) <= new Date()
+                            ? "completed"
+                            : booking.status
+                        }
+                      </span>
                         <p className="font-serif text-lg md:text-xl mt-1 text-[#1a1a1a]">₹{booking.amount}</p>
                       </div>
                       
-                     {booking.status === 'completed' && (
+                     {booking.status === 'completed' && new Date(booking.endTime) <= new Date() && (
 
-  booking.review ? (
+    booking.review ? (
 
     <div className="flex gap-2">
 

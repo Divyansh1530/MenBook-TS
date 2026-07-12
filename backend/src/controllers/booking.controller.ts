@@ -208,40 +208,9 @@ const cancelBooking = asyncHandler(async(req,res) => {
     )
 })
 
-const markBookingComplete = asyncHandler(async(req,res) => {
-
-    const bookingId = req.params.bookingId as string
-
-    const booking = await Booking.findById(bookingId)
-
-    if (!mongoose.Types.ObjectId.isValid(bookingId)) {
-        throw new ApiError(400,"Invalid booking id")
-    }
-
-    if (!booking) {
-        throw new ApiError(404,"Booking not found")
-    }
-
-    // if (booking.mentorId.toString() !== req.user!._id.toString()) {
-    //     throw new ApiError(403,"Unauthorized")
-    // }
-
-    booking.status = "completed"
-    booking.expiresAt = null
-
-    await booking.save()
-
-    return res
-    .status(200)
-    .json(
-        new ApiResponse(200,booking,"Booking marked completed")
-    )
-})
-
 export {
     createBooking,
     getUserBookings,
     getMentorBookings,
-    cancelBooking,
-    markBookingComplete   
+    cancelBooking, 
 }

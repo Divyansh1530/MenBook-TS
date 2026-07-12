@@ -93,8 +93,16 @@ const createReview = asyncHandler(async(req,res) => {
         throw new ApiError(400,"Mentor does not match booking")
     }
 
+    const now = new Date();
+
+    if (booking.endTime > now) {
+        throw new ApiError(400,"You can review this session only after it has ended.");
+    }
+
     if (booking.status !== "completed") {
-        throw new ApiError(400,"Only completed sessions can be reviewed")
+        booking.status = "completed";
+        booking.expiresAt = null;
+        await booking.save();
     }
 
     const existingReview = await Review.findOne({

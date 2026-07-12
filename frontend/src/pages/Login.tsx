@@ -58,7 +58,7 @@ function Login({
 
   return (
     <PageTransition>
-    <div className="md:min-h-screen min-h-[80vh] bg-[#fdfaf3] flex flex-col items-center justify-center pt-5 md:pt-20 p-6">
+    <div className="min-h-screen bg-[#fdfaf3] flex flex-col items-center justify-center pt-5 md:pt-20 p-6">
       <div className="w-full max-w-md">
         
         <div className="mb-10">
