@@ -141,32 +141,32 @@ const verifyPayment = asyncHandler(async(req,res) => {
         throw new ApiError(404,"Mentor Not Found")
     }
 
-    await sendEmail({
+    // await sendEmail({
 
-        to: user.email,
+    //     to: user.email,
 
-        subject: "Booking Confirmed",
+    //     subject: "Booking Confirmed",
 
-        html: bookingConfirmationTemplate({
-            mentorName:mentor.name,
-            meetingLink:booking.meetingLink,
-            sessionTime:new Date(
-                booking.startTime
-            ).toLocaleDateString()
-        })
-    })
+    //     html: bookingConfirmationTemplate({
+    //         mentorName:mentor.name,
+    //         meetingLink:booking.meetingLink,
+    //         sessionTime:new Date(
+    //             booking.startTime
+    //         ).toLocaleDateString()
+    //     })
+    // })
 
-    await sendEmail({
+    // await sendEmail({
 
-        to: mentor.email,
+    //     to: mentor.email,
 
-        subject: "New Session Booked",
+    //     subject: "New Session Booked",
 
-        html: mentorBookingTemplate({
-            userName:user.name,
-            meetingLink:booking.meetingLink
-        })
-    })
+    //     html: mentorBookingTemplate({
+    //         userName:user.name,
+    //         meetingLink:booking.meetingLink
+    //     })
+    // })
 
     return res
         .status(200)
