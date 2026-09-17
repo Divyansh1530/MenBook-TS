@@ -143,10 +143,24 @@ const registerUser = asyncHandler(async(req,res) => {
         throw new ApiError(500, "Something went wrong while registering the user")
     }
 
+    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id.toString())
+
+    const options: CookieOptions = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none"
+    }
+
     return res
     .status(201)
+    .cookie("accessToken", accessToken, options)
+    .cookie("refreshToken", refreshToken, options)
     .json(
-        new ApiResponse(201, createdUser, "User registered Successfully")
+        new ApiResponse(
+            201, 
+            { user: createdUser, accessToken, refreshToken }, 
+            "User registered and logged in successfully"
+        )
     )
 
 
@@ -219,7 +233,8 @@ const logoutUser = asyncHandler(async(req,res) => {
 
     const options:CookieOptions = {
         httpOnly: true,
-        secure: true
+        secure: true,
+        sameSite: "none"
     }
 
     return res
@@ -239,15 +254,15 @@ interface JwtPayload {
 }
 
 const refreshAccessToken = asyncHandler(async(req,res) => {
-    const {refreshToken} = req.body as RefreshTokenBody
+    const incomingRefreshToken = req.cookies?.refreshToken || (req.body as RefreshTokenBody)?.refreshToken
 
-    if (!refreshToken) {
+    if (!incomingRefreshToken) {
         throw new ApiError(401, "Unauthorized request")
     }
 
     try {
         const decodedToken = jwt.verify(
-            refreshToken,
+            incomingRefreshToken,
             process.env.REFRESH_TOKEN_SECRET!
         ) as JwtPayload
     
@@ -257,14 +272,15 @@ const refreshAccessToken = asyncHandler(async(req,res) => {
             throw new ApiError(401, "Invalid refresh token")
         }
     
-        if (refreshToken !== user?.refreshToken) {
+        if (incomingRefreshToken !== user?.refreshToken) {
             throw new ApiError(401, "Refresh token is expired or used")
             
         }
     
         const options:CookieOptions = {
             httpOnly: true,
-            secure: true
+            secure: true,
+            sameSite: "none"
         }
     
         const {accessToken, refreshToken : newRefreshToken} = await generateAccessAndRefreshTokens(user._id.toString())

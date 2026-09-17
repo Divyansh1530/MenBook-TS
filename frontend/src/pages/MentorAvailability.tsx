@@ -27,9 +27,7 @@ function MentorAvailability({
     'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
   ]
 
-  if (user?.role !== "mentor") {
-    return <Navigate to="/" />
-  }
+
 
   const fetchAvailability = async () => {
     try {
@@ -87,7 +85,7 @@ function MentorAvailability({
       })
       toast.success('Availability created successfully')
       fetchAvailability()
-    } catch (error) {
+    } catch {
       // const err = error as AxiosError
       toast.error('Failed to create availability')
     }
@@ -177,6 +175,10 @@ function MentorAvailability({
   const endMins = convertTimeToMinutes(formData.endTime)
   const totalDuration = endMins - startMins
   const slotsCount = totalDuration > 0 ? Math.floor(totalDuration / (Number(formData.slotDuration) + Number(formData.bufferTime))) : 0
+
+  if (user?.role !== "mentor") {
+    return <Navigate to="/" />
+  }
 
   if (loading) {
   return (

@@ -279,13 +279,13 @@ const getAvailableSlots = asyncHandler(async (req, res) => {
 
     const dayOfWeek = selectedDate.getDay();
 
-    const availability = await Availability.findOne({
+    const availabilities = await Availability.find({
         mentorId,
         dayOfWeek,
         isBlocked: false
     });
 
-    if (!availability) {
+    if (!availabilities.length) {
         return res.status(200).json(
             new ApiResponse(
                 200,
@@ -295,11 +295,16 @@ const getAvailableSlots = asyncHandler(async (req, res) => {
         );
     }
 
-    const generatedSlots = generateSlots({
-        startTime: availability.startTime,
-        endTime: availability.endTime,
-        slotDuration: availability.slotDuration,
-        bufferTime: availability.bufferTime
+    let generatedSlots: { startTime: number; endTime: number }[] = [];
+
+    availabilities.forEach(availability => {
+        const slotsForShift = generateSlots({
+            startTime: availability.startTime,
+            endTime: availability.endTime,
+            slotDuration: availability.slotDuration,
+            bufferTime: availability.bufferTime
+        });
+        generatedSlots = [...generatedSlots, ...slotsForShift];
     });
 
     const startOfDay = new Date(selectedDate);
@@ -341,13 +346,18 @@ const getAvailableSlots = asyncHandler(async (req, res) => {
 
         const slotAlreadyBooked = validBookings.some((booking) => {
 
-            const bookingDate = new Date(booking.startTime);
-
+            const bookingStartDate = new Date(booking.startTime);
             const bookingStartMinutes =
-                bookingDate.getHours() * 60 +
-                bookingDate.getMinutes();
+                bookingStartDate.getHours() * 60 +
+                bookingStartDate.getMinutes();
+            
+            const bookingEndDate = new Date(booking.endTime);
+            const bookingEndMinutes =
+                bookingEndDate.getHours() * 60 +
+                bookingEndDate.getMinutes();
 
-            return bookingStartMinutes === slot.startTime;
+            // Check for overlap: a slot overlaps if it starts before the booking ends AND ends after the booking starts
+            return slot.startTime < bookingEndMinutes && slot.endTime > bookingStartMinutes;
         });
 
         return !slotAlreadyBooked;

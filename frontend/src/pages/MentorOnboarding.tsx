@@ -55,7 +55,7 @@ function MentorOnboarding({
     }
     fetchUser()
 
-  },[])
+  },[setUser])
 
   const handleChange = (e:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 
@@ -66,77 +66,75 @@ function MentorOnboarding({
   }
 
   const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     if (
       !formData.title.trim() ||
       !formData.bio.trim() ||
       !formData.expertise.trim() ||
       !formData.pricing.trim()
     ) {
-      toast.error("Please fill in all required fields.");
+      toast.error("Please fill in all essential fields: Title, Bio, Expertise, and Pricing.");
       return;
     }
 
-    e.preventDefault()
+    const priceNum = Number(formData.pricing);
+    if (isNaN(priceNum) || priceNum <= 0) {
+      toast.error("Please enter a valid pricing amount greater than 0.");
+      return;
+    }
 
     try {
 
-      setSubmitting(true)
+      setSubmitting(true);
 
       await api.patch(
         '/users/update-details',
-
         {
-          title: formData.title,
-
-          bio: formData.bio,
-
+          title: formData.title.trim(),
+          bio: formData.bio.trim(),
           expertise: formData.expertise
             .split(',')
-            .map(item => item.trim()),
-
-          pricing: Number(formData.pricing),
-
-          experience: formData.experience,
-
-          linkedin: formData.linkedin,
-
-          portfolio: formData.portfolio,
-
+            .map(item => item.trim())
+            .filter(Boolean),
+          pricing: priceNum,
+          experience: formData.experience.trim(),
+          linkedin: formData.linkedin.trim(),
+          portfolio: formData.portfolio.trim(),
           isProfileComplete: true
         },
-
         {
           withCredentials: true
         }
-      )
+      );
+
       if (avatar) {
         const data = new FormData();
         data.append("avatar", avatar);
 
         await api.patch(
-            "/users/update-avatar",
-            data,
-            {
+          "/users/update-avatar",
+          data,
+          {
             withCredentials: true,
             headers: {
-                "Content-Type":
-                "multipart/form-data",
+              "Content-Type": "multipart/form-data",
             },
-            }
-        );
-        }
-      const response = await api.get(
-          "/users/current-user",
-          {
-            withCredentials: true
           }
-        )
+        );
+      }
 
-        setUser(response.data.data)
+      const response = await api.get(
+        "/users/current-user",
+        {
+          withCredentials: true
+        }
+      );
 
-      toast.success('Profile completed successfully')
+      setUser(response.data.data);
 
-      navigate('/dashboard')
+      toast.success('Profile completed successfully!');
+      navigate('/profile');
 
     } catch (error) {
       const err = error as AxiosError<{message:string}>  

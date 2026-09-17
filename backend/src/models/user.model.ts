@@ -29,7 +29,6 @@ export interface User {
     avatar?:string;
     timezone:string;
     role:"user" | "mentor";
-    phone?:string;
     mentorProfile?:MentorProfile;
     refreshToken?:string;
     googleId?:string;

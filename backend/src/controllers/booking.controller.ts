@@ -115,6 +115,18 @@ const getUserBookings = asyncHandler(async(req,res) => {
 
     const userId = req.user!._id.toString()
 
+    // Automatically complete confirmed bookings whose end time has passed
+    await Booking.updateMany(
+        {
+            userId,
+            status: "confirmed",
+            endTime: { $lte: new Date() }
+        },
+        {
+            $set: { status: "completed" }
+        }
+    )
+
     const bookings = await Booking.find({
         userId
     })
@@ -153,6 +165,18 @@ const getMentorBookings = asyncHandler(async(req,res) => {
     }
 
     const mentorId = req.user!._id.toString()
+
+    // Automatically complete confirmed bookings whose end time has passed
+    await Booking.updateMany(
+        {
+            mentorId,
+            status: "confirmed",
+            endTime: { $lte: new Date() }
+        },
+        {
+            $set: { status: "completed" }
+        }
+    )
 
     const bookings = await Booking.find({
         mentorId

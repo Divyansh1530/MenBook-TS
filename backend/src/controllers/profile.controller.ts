@@ -59,18 +59,19 @@ const getCurrentUser = asyncHandler(async(req,res) => {
     })
 
 interface AccountBody {
-    name:string;
-    title:string;
-    bio:string;
-    expertise:string[];
-    pricing:string;
-    experience:string;
-    linkedin:string;
-    portfolio:string;
+    name?: string;
+    title?: string;
+    bio?: string;
+    expertise?: string[];
+    pricing?: string | number;
+    experience?: string;
+    linkedin?: string;
+    portfolio?: string;
+    isProfileComplete?: boolean;
 }
 
 const updateAccountDetails = asyncHandler(async(req,res) => {
-    const {name , title , bio , expertise , pricing , experience , linkedin , portfolio} = req.body as AccountBody
+    const {name, title, bio, expertise, pricing, experience, linkedin, portfolio, isProfileComplete} = req.body as AccountBody
 
     const user = await User.findById(req.user?._id)
 
@@ -125,6 +126,18 @@ const updateAccountDetails = asyncHandler(async(req,res) => {
 
       if (portfolio !== undefined) {
         user.mentorProfile.portfolio = portfolio
+      }
+
+      if (isProfileComplete !== undefined) {
+        user.isProfileComplete = Boolean(isProfileComplete)
+      } else if (
+        user.mentorProfile.title &&
+        user.mentorProfile.bio &&
+        user.mentorProfile.expertise &&
+        user.mentorProfile.expertise.length > 0 &&
+        user.mentorProfile.pricing !== undefined
+      ) {
+        user.isProfileComplete = true
       }
 
     }

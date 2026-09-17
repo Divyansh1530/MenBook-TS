@@ -72,8 +72,13 @@ const bookingSchema = new Schema<Booking>({
 )
  
 bookingSchema.index(
-    { mentorId:1 , startTime:1 },
-    { unique:true }
+    { mentorId: 1, startTime: 1 },
+    {
+        unique: true,
+        partialFilterExpression: {
+            status: { $in: ["confirmed", "pending"] }
+        }
+    }
 )
 
 export const Booking = mongoose.model("Booking",bookingSchema)

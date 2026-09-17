@@ -38,19 +38,6 @@ function MentorDashboard({
     }
   };
 
-  const handleMarkCompleted = async (bookingId:string) => {
-    try {
-      await api.patch(`/booking/${bookingId}/complete`, {}, {
-        withCredentials: true
-      });
-      toast.success('Booking marked as completed');
-      fetchBookings();
-    } catch (error) {
-      const err = error as AxiosError<{message:string}>  
-      toast.error(err.response?.data?.message || 'Failed to update booking');
-    }
-  };
-
   const formatDate = (date:string):string => new Date(date).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
 
       if (loading)
@@ -281,14 +268,18 @@ const displayedBookings =
                           <div className="text-left sm:text-right">
                             <span
                               className={`px-3 py-1 rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-widest ${
-                                booking.status === 'completed'
+                                booking.status === 'completed' || sessionEnded
                                   ? 'bg-green-50 text-green-600'
                                   : booking.status === 'cancelled'
                                   ? 'bg-red-50 text-red-600'
                                   : 'bg-orange-50 text-orange-600'
                               }`}
                             >
-                              {booking.status}
+                              {booking.status === 'cancelled'
+                                ? 'cancelled'
+                                : sessionEnded
+                                ? 'completed'
+                                : booking.status}
                             </span>
 
                             <p className="font-serif text-lg md:text-xl mt-1 text-[#1a1a1a]">
@@ -296,18 +287,15 @@ const displayedBookings =
                             </p>
                           </div>
 
-                          {booking.status === 'confirmed' && (
-                            <button
-                              disabled={!sessionEnded}
-                              onClick={() => handleMarkCompleted(booking._id)}
-                              className={`px-5 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-medium transition-all ${
-                                sessionEnded
-                                  ? 'bg-[#120f0a] text-white hover:bg-black'
-                                  : 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                              }`}
+                          {booking.status === 'confirmed' && booking.meetingLink && !sessionEnded && (
+                            <a
+                              href={booking.meetingLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="bg-[#120f0a] text-white px-5 py-2 md:px-6 md:py-3 rounded-full text-xs md:text-sm font-medium hover:bg-black transition-all inline-block"
                             >
-                              {sessionEnded ? 'Mark Completed' : 'Session Active'}
-                            </button>
+                              Join Meeting
+                            </a>
                           )}
 
                         </div>

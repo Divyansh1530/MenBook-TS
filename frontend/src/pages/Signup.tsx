@@ -6,6 +6,8 @@ import type { AxiosError } from 'axios'
 import { FcGoogle } from 'react-icons/fc'
 import { Eye , EyeOff } from 'lucide-react'
 import PageTransition from '../components/PageTransition.tsx'
+import type { User } from '../types/user'
+import { toast } from 'sonner'
 
 interface FormErrors {
     name?:string;
@@ -28,7 +30,11 @@ interface FormErrors {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#^()_\-+=])[A-Za-z\d@$!%*?&#^()_\-+=]{8,}$/
 
-function Signup() {
+interface SignupProps {
+  setUser?: React.Dispatch<React.SetStateAction<User | null>>;
+}
+
+function Signup({ setUser }: SignupProps) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const roleFromURL = searchParams.get("role")
@@ -112,11 +118,23 @@ function Signup() {
       }
       if (avatar) data.append("avatar", avatar)
 
-      await api.post("/users/register", data, {
+      const response = await api.post("/users/register", data, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true
-      })
-      navigate("/login")
+      });
+
+      const registeredUser = response.data?.data?.user;
+      if (setUser && registeredUser) {
+        setUser(registeredUser);
+      }
+
+      toast.success("Account created successfully!");
+
+      if (formData.role === "mentor" && registeredUser && !registeredUser.isProfileComplete) {
+        navigate("/mentor-onboarding");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
       const err = error as AxiosError<{message:string}>;  
       setServerError(err.response?.data?.message || "Signup failed")

@@ -19,9 +19,10 @@ function BrowseMentors() {
   const [rating,setRating] = useState("")
   const [sortBy,setSortBy] = useState("")
   const query = searchParams.get('search') || '';
+  const specQuery = searchParams.get('specialization') || '';
   const [search, setSearch] = useState(query);
   const [debouncedSearch , setDebouncedSearch] = useState(search)
-  const specialization = ""
+  const [specialization, setSpecialization] = useState(specQuery)
   
   const navigate = useNavigate();
 
@@ -41,6 +42,13 @@ function BrowseMentors() {
     { name: 'Startup Founder', icon: '▲' },
     { name: 'Data Scientist', icon: '≈' }
   ];
+
+  useEffect(() => {
+    const spec = searchParams.get('specialization') || '';
+    setSpecialization(spec);
+    const q = searchParams.get('search') || '';
+    setSearch(q);
+  }, [searchParams]);
 
   useEffect(() => {
 
@@ -112,13 +120,15 @@ useEffect(() => {
   ]);
 
   const handleCategoryClick = (catName:string) => {
+    const newParams = new URLSearchParams(searchParams);
     if (catName === 'All') {
-      setSearchParams({});
-      setSearch('');
+      newParams.delete('specialization');
+      setSpecialization('');
     } else {
-      setSearchParams({ search: catName });
-      setSearch(catName);
+      newParams.set('specialization', catName);
+      setSpecialization(catName);
     }
+    setSearchParams(newParams);
   };
 
   return (
@@ -172,11 +182,15 @@ useEffect(() => {
 
       <input
         type="number"
+        min="0"
         placeholder="500"
         value={minPrice}
-        onChange={(e:ChangeEvent<HTMLInputElement>) =>
-          setMinPrice(e.target.value)
-        }
+        onChange={(e:ChangeEvent<HTMLInputElement>) => {
+          const val = e.target.value;
+          if (val === "" || Number(val) >= 0) {
+            setMinPrice(val);
+          }
+        }}
         className="w-full bg-white border border-black/5 rounded-2xl px-5 py-3 outline-none focus:ring-2 focus:ring-black/5 text-sm"
       />
 
@@ -266,8 +280,8 @@ useEffect(() => {
           handleCategoryClick(cat.name)
         }
         className={`flex items-center gap-2 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full border text-[12px] sm:text-[13px] font-medium transition-all whitespace-nowrap ${
-          (search === cat.name ||
-          (cat.name === 'All' && !search))
+          (specialization === cat.name ||
+          (cat.name === 'All' && !specialization))
             ? 'bg-[#120f0a] text-white border-[#120f0a]'
             : 'bg-white/50 border-black/5 text-gray-600 hover:border-black/20 hover:bg-white'
         }`}

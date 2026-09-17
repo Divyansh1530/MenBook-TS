@@ -19,6 +19,7 @@ const uploadOnCloudinary = async (localFilePath:string):Promise<UploadApiRespons
         return response;
 
     } catch (error) {
+
         if (fs.existsSync(localFilePath)) {
             fs.unlinkSync(localFilePath)
         }

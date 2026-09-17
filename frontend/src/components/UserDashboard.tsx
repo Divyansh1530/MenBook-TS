@@ -1,4 +1,5 @@
 import { useEffect, useState , type ChangeEvent , type ReactNode } from 'react'
+import { createPortal } from 'react-dom'
 import { Star, Calendar, CheckSquare, TrendingUp, ArrowRight, X } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import api from '../api/axios'
@@ -24,6 +25,17 @@ function UserDashboard({
   useEffect(() => {
     fetchBookings()
   }, [])
+
+  useEffect(() => {
+    if (selectedBooking) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [selectedBooking])
 
   const fetchBookings = async () => {
     setLoading(true)
@@ -364,6 +376,17 @@ const totalInvested = bookings.reduce(
                         <p className="font-serif text-lg md:text-xl mt-1 text-[#1a1a1a]">₹{booking.amount}</p>
                       </div>
                       
+                      {booking.status === 'confirmed' && booking.meetingLink && new Date(booking.endTime) > new Date() && (
+                        <a
+                          href={booking.meetingLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-[#120f0a] text-white px-5 py-2 md:px-6 md:py-3 rounded-2xl text-xs md:text-sm font-medium hover:bg-black transition-all inline-block"
+                        >
+                          Join Meeting
+                        </a>
+                      )}
+
                      {booking.status === 'completed' && new Date(booking.endTime) <= new Date() && (
 
     booking.review ? (
@@ -427,32 +450,51 @@ const totalInvested = bookings.reduce(
           )}
         </div>
 
-        {selectedBooking && (
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-100 p-4">
-            <div className="bg-[#fdfaf3] rounded-[2.5rem] md:rounded-[40px] w-full max-w-xl p-8 md:p-12 relative border border-black/5 shadow-2xl">
-              <button onClick={() => setSelectedBooking(null)} className="absolute top-6 right-6 md:top-8 md:right-8 text-gray-400 hover:text-black transition-colors">
-                <X size={24} />
+        {selectedBooking && createPortal(
+          <div
+            className="fixed inset-0 z-100 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
+            onClick={() => setSelectedBooking(null)}
+          >
+            <div
+              className="bg-[#fdfaf3] rounded-3xl sm:rounded-[36px] w-full max-w-lg p-6 sm:p-10 relative border border-black/5 shadow-2xl max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setSelectedBooking(null)}
+                className="absolute top-5 right-5 sm:top-6 sm:right-6 text-gray-400 hover:text-black transition-colors"
+              >
+                <X size={22} />
               </button>
-              <h2 className="font-serif text-3xl md:text-4xl text-[#1a1a1a] mb-6 md:mb-8">{editingReview ? "Update your review" : "How was your session"}</h2>
-              <div className="flex gap-2 mb-6 md:mb-8">
+              <h2 className="font-serif text-2xl sm:text-3xl text-[#1a1a1a] mb-5 sm:mb-6">
+                {editingReview ? "Update your review" : "How was your session"}
+              </h2>
+              <div className="flex gap-2 mb-5 sm:mb-6">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <button key={star} onClick={() => setRating(star)}>
-                    <Star size={28} fill={star <= rating ? "#e94e36" : "none"} className={star <= rating ? "text-[#e94e36]" : "text-gray-200"} />
+                  <button key={star} onClick={() => setRating(star)} className="focus:outline-none">
+                    <Star
+                      size={28}
+                      fill={star <= rating ? "#e94e36" : "none"}
+                      className={star <= rating ? "text-[#e94e36]" : "text-gray-300"}
+                    />
                   </button>
                 ))}
               </div>
-              <textarea 
-                rows={4} 
-                value={comment} 
-                onChange={(e:ChangeEvent<HTMLTextAreaElement>) => setComment(e.target.value)} 
+              <textarea
+                rows={4}
+                value={comment}
+                onChange={(e:ChangeEvent<HTMLTextAreaElement>) => setComment(e.target.value)}
                 placeholder="Your experience helps others..."
-                className="w-full bg-white border border-black/5 rounded-3xl p-5 md:p-6 outline-none focus:ring-2 focus:ring-black/5 mb-6 md:mb-8 font-sans text-sm md:text-base"
+                className="w-full bg-white border border-black/10 rounded-2xl p-4 sm:p-5 outline-none focus:border-black/30 mb-6 font-sans text-sm sm:text-base resize-none"
               />
-              <button onClick={editingReview ? handleUpdateReview : handleSubmitReview} className="w-full bg-[#120f0a] text-white py-3 md:py-4 rounded-full font-medium text-base md:text-lg hover:bg-black transition-all">
-                Submit Review
+              <button
+                onClick={editingReview ? handleUpdateReview : handleSubmitReview}
+                className="w-full bg-[#120f0a] text-white py-3 sm:py-3.5 rounded-full font-medium text-sm sm:text-base hover:bg-black transition-all active:scale-[0.98]"
+              >
+                {editingReview ? "Update Review" : "Submit Review"}
               </button>
             </div>
-          </div>
+          </div>,
+          document.body
         )}
       </div>
     </section>

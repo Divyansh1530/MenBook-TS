@@ -13,7 +13,7 @@ interface Availability {
 }
 
 const availabilitySchema = new Schema<Availability>({
-     mentorId:{
+        mentorId:{
             type:Schema.Types.ObjectId,
             ref:"User",
             required:true

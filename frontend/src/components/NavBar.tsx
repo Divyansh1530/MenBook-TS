@@ -54,32 +54,40 @@ function NavBar({
     }
   };
 
+  const isMentorIncomplete = user?.role === 'mentor' && !user.isProfileComplete;
+
   return (
     <nav className="sticky top-0 w-full bg-[#fdfaf3]/90 backdrop-blur-sm border-b border-black/5 px-6 md:px-12 z-9999">
       <div className="max-w-7xl mx-auto flex justify-between h-16 items-center">
         
 
-        <Link to="/" className="flex items-center gap-3">
+        <Link to={isMentorIncomplete ? "/mentor-onboarding" : "/"} className="flex items-center gap-3">
           <div className="w-9 h-9 bg-[#120f0a] rounded-lg flex items-center justify-center">
             <span className="text-[#fdfaf3] font-serif font-bold text-xl">M</span>
           </div>
           <span className="hero-heading font-serif text-xl tracking-tighter text-[#1a1a1a] transform scale-y-[1.2] origin-left">MenBook</span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-10">
-          <Link to="/" className="text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors">Home</Link>
-          <Link to="/browse-mentors" className="text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors">Browse mentors</Link>
-          <Link to="/about" className='text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors'>About</Link>
-          <Link to="/contact" className='text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors'>Contact</Link>
-          
+        {isMentorIncomplete ? (
+          <div className="hidden md:flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-900 border border-amber-500/20 text-xs font-semibold uppercase tracking-wider">
+            Mentor Setup In Progress
+          </div>
+        ) : (
+          <div className="hidden md:flex items-center gap-10">
+            <Link to="/" className="text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors">Home</Link>
+            <Link to="/browse-mentors" className="text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors">Browse mentors</Link>
+            <Link to="/about" className='text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors'>About</Link>
+            <Link to="/contact" className='text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors'>Contact</Link>
+            
 
-          {user?.role === 'mentor' && (
-            <Link to="/mentor-availability" className="flex items-center gap-1.5 text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors">
-              <Calendar size={16} />
-              Availability
-            </Link>
-          )}
-        </div>
+            {user?.role === 'mentor' && (
+              <Link to="/mentor-availability" className="flex items-center gap-1.5 text-[0.95rem] font-medium text-gray-700 hover:text-black transition-colors">
+                <Calendar size={16} />
+                Availability
+              </Link>
+            )}
+          </div>
+        )}
 
 
         <div className="hidden md:flex items-center gap-8">
@@ -116,41 +124,31 @@ function NavBar({
                     </span>
                   </div>
 
-                  <Link 
-                  to="/dashboard" 
-                  onClick={() => setProfileOpen(false)} 
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-white transition-colors text-gray-700">
-                  <LayoutDashboard 
-                  size={18} 
-                  className="text-gray-400" 
-                  />
-                  <span>
-                    Dashboard
-                  </span>
-                  </Link>
-                  <Link 
-                  to="/profile" 
-                  onClick={() => setProfileOpen(false)} 
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-white transition-colors text-gray-700">
-                    <User 
-                    size={18} 
-                    className="text-gray-400" 
-                    /> 
-                    <span>
-                      Profile settings
-                    </span>
-                  </Link>
-                  <hr className="my-2 border-black/5" />
+                  {!isMentorIncomplete && (
+                    <>
+                      <Link 
+                        to="/dashboard" 
+                        onClick={() => setProfileOpen(false)} 
+                        className="flex items-center gap-3 p-3 rounded-xl hover:bg-white transition-colors text-gray-700">
+                        <LayoutDashboard size={18} className="text-gray-400" />
+                        <span>Dashboard</span>
+                      </Link>
+                      <Link 
+                        to="/profile" 
+                        onClick={() => setProfileOpen(false)} 
+                        className="flex items-center gap-3 p-3 rounded-xl hover:bg-white transition-colors text-gray-700">
+                        <User size={18} className="text-gray-400" /> 
+                        <span>Profile settings</span>
+                      </Link>
+                      <hr className="my-2 border-black/5" />
+                    </>
+                  )}
+
                   <button 
-                  onClick={handleLogout} 
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-white transition-colors text-gray-700">
-                    <LogOut 
-                    size={18} 
-                    className="text-gray-400" 
-                    /> 
-                    <span>
-                      Log out
-                    </span>
+                    onClick={handleLogout} 
+                    className="flex items-center gap-3 p-3 rounded-xl hover:bg-white transition-colors text-gray-700 cursor-pointer">
+                    <LogOut size={18} className="text-gray-400" /> 
+                    <span>Log out</span>
                   </button>
                 </div>
               )}
@@ -187,81 +185,92 @@ function NavBar({
                 </div>
                <div>
                   <p className="font-bold text-[#1a1a1a]">{user.name}</p>
-                  <p className="text-[10px] font-bold px-6 py-1 bg-red-50 text-red-400 rounded-md uppercase tracking-wider">{user.role}</p>
+                  <p className="text-[10px] font-bold px-2 py-1 bg-red-50 text-red-400 rounded-md uppercase tracking-wider">{user.role}</p>
                </div>
             </div>
           )}
-          <Link 
-          to="/" 
-          className="block text-lg font-medium text-gray-800" 
-          onClick={() => setMenuOpen(false)}>
-            Home
-            </Link>
-          <Link 
-          to="/browse-mentors" 
-          className="block text-lg font-medium text-gray-800" 
-          onClick={() => setMenuOpen(false)}>
-            Browse Mentors
-          </Link>
-          
-          {!user &&
-          <div className='flex items-center gap-5'>
-          <Link
-          to="/login"
-          className='text-lg py-1 font-medium text-gray-900'
-          onClick={() => setMenuOpen(false)}
-          >
-           Login
-          </Link>
-          <Link
-          to="/signup"
-          className='text-md flex items-center font-normal bg-black rounded-full px-4 py-2 text-white'
-          onClick={() => setMenuOpen(false)}
-          >
-           Signup
-          </Link>
-          </div>
-          
-        }
-        <Link 
-          to="/about" 
-          className="block text-lg font-medium text-gray-800" 
-          onClick={() => setMenuOpen(false)}>
-            About
-          </Link>
-          <Link 
-          to="/contact" 
-          className="block text-lg font-medium text-gray-800" 
-          onClick={() => setMenuOpen(false)}>
-            Contact
-          </Link>
-          {user && (
-            <>
 
-              {user.role === 'mentor' && (
-                <Link to="/mentor-availability" className="flex items-center gap-1 text-lg font-medium text-gray-800" onClick={() => setMenuOpen(false)}>
-                  <Calendar size={18} className='text-gray-400'/>
-                    Availability
-                    </Link>
-              )}
-              <Link to="/dashboard" className="flex items-center text-lg font-medium text-gray-800 space-x-1" onClick={() => setMenuOpen(false)}><LayoutDashboard 
-                  size={18} 
-                  className="text-gray-400" 
-                  />
-                  <span>
-                    Dashboard
-                  </span>
-                  </Link>
-              <Link to="/profile" className="flex items-center text-lg font-medium text-gray-800 space-x-1" onClick={() => setMenuOpen(false)}><User
-                  size={18} 
-                  className="text-gray-400" 
-                  />
-                  <span>
-                    Profile Settings
-                  </span>
-                  </Link>
-              <button onClick={handleLogout} className="flex items-center w-full text-lg gap-1 font-medium text-red-600"><LogOut/>Logout</button>
+          {isMentorIncomplete ? (
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600">
+                Please complete your essential mentor details to continue.
+              </p>
+              <button 
+                onClick={handleLogout} 
+                className="flex items-center w-full text-lg gap-2 font-medium text-red-600 cursor-pointer">
+                <LogOut size={18} />
+                <span>Logout</span>
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link 
+                to="/" 
+                className="block text-lg font-medium text-gray-800" 
+                onClick={() => setMenuOpen(false)}>
+                Home
+              </Link>
+              <Link 
+                to="/browse-mentors" 
+                className="block text-lg font-medium text-gray-800" 
+                onClick={() => setMenuOpen(false)}>
+                Browse Mentors
+              </Link>
               
+              {!user && (
+                <div className='flex items-center gap-5'>
+                  <Link
+                    to="/login"
+                    className='text-lg py-1 font-medium text-gray-900'
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className='text-md flex items-center font-normal bg-black rounded-full px-4 py-2 text-white'
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Signup
+                  </Link>
+                </div>
+              )}
+
+              <Link 
+                to="/about" 
+                className="block text-lg font-medium text-gray-800" 
+                onClick={() => setMenuOpen(false)}>
+                About
+              </Link>
+              <Link 
+                to="/contact" 
+                className="block text-lg font-medium text-gray-800" 
+                onClick={() => setMenuOpen(false)}>
+                Contact
+              </Link>
+
+              {user && (
+                <>
+                  {user.role === 'mentor' && (
+                    <Link to="/mentor-availability" className="flex items-center gap-1 text-lg font-medium text-gray-800" onClick={() => setMenuOpen(false)}>
+                      <Calendar size={18} className='text-gray-400'/>
+                      <span>Availability</span>
+                    </Link>
+                  )}
+                  <Link to="/dashboard" className="flex items-center text-lg font-medium text-gray-800 space-x-1" onClick={() => setMenuOpen(false)}>
+                    <LayoutDashboard size={18} className="text-gray-400" />
+                    <span>Dashboard</span>
+                  </Link>
+                  <Link to="/profile" className="flex items-center text-lg font-medium text-gray-800 space-x-1" onClick={() => setMenuOpen(false)}>
+                    <User size={18} className="text-gray-400" />
+                    <span>Profile Settings</span>
+                  </Link>
+                  <button onClick={handleLogout} className="flex items-center w-full text-lg gap-1 font-medium text-red-600 cursor-pointer">
+                    <LogOut size={18} />
+                    <span>Logout</span>
+                  </button>
+                </>
+              )}
             </>
           )}
         </div>

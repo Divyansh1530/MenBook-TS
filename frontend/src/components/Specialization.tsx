@@ -33,7 +33,7 @@ function Specialization() {
           {categories.map((cat) => (
             <div
               key={cat.id}
-              onClick={() => navigate(`/browse-mentors?search=${cat.name}`)}
+              onClick={() => navigate(`/browse-mentors?specialization=${encodeURIComponent(cat.name)}`)}
               className="group bg-[#fdf9f3] border border-black/15 rounded-2xl p-6 flex flex-col items-start justify-between min-h-40 transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-black/5 cursor-pointer"
             >
 

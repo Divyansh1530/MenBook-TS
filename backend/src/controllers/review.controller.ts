@@ -18,7 +18,8 @@ const calculateMentorRating = async (mentorId:string):Promise<void> => {
             mentorId,
             {
                 $set: {
-                    "mentorProfile.avgRating": 0
+                    "mentorProfile.avgRating": 0,
+                    "mentorProfile.totalReviews": 0
                 }
             }
         )
@@ -38,7 +39,8 @@ const calculateMentorRating = async (mentorId:string):Promise<void> => {
             $set: {
                 "mentorProfile.avgRating": Number(
                     avgRating.toFixed(1)
-                )
+                ),
+                "mentorProfile.totalReviews": reviews.length
             }
         }
     )
@@ -91,6 +93,14 @@ const createReview = asyncHandler(async(req,res) => {
 
     if (booking.mentorId.toString() !== mentorId.toString()) {
         throw new ApiError(400,"Mentor does not match booking")
+    }
+
+    if (booking.status === "cancelled") {
+        throw new ApiError(400, "Cannot review a cancelled booking")
+    }
+
+    if (booking.status !== "confirmed" && booking.status !== "completed") {
+        throw new ApiError(400, "Only confirmed sessions can be reviewed")
     }
 
     const now = new Date();

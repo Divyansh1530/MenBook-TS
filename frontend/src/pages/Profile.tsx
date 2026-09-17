@@ -102,18 +102,21 @@ function Profile() {
     }
   };
 
-  const handleAvatarUpdate = async (file:File) => {
+  const handleAvatarUpdate = async (file?: File | null) => {
+    if (!file) return;
     try {
       const data = new FormData();
       data.append('avatar', file);
       await api.patch('/users/update-avatar', data, {
-        withCredentials: true,
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        withCredentials: true
       });
       toast.success('Avatar updated successfully');
       fetchCurrentUser();
     } catch (error) {
-      const err = error as AxiosError<{message:string}>
+      const err = error as AxiosError<{message:string}>;
       toast.error(err.response?.data?.message || 'Avatar update failed');
     }
   };
@@ -239,7 +242,18 @@ function Profile() {
                 </div>
                 <label className="absolute bottom-1 right-1 bg-[#120f0a] p-2 rounded-full cursor-pointer hover:scale-110 transition-all text-white shadow-lg">
                     <FiCamera size={18} />
-                    <input type="file" className="hidden" onChange={(e) => handleAvatarUpdate(e.target.files![0])} />
+                    <input 
+                      type="file" 
+                      accept="image/*"
+                      className="hidden" 
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          handleAvatarUpdate(file);
+                        }
+                        e.target.value = '';
+                      }} 
+                    />
                 </label>
               </div>
               <h2 className="font-serif text-2xl text-[#1a1a1a] break-all">{user!.name}</h2>

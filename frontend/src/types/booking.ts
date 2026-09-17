@@ -26,5 +26,6 @@ export interface Booking {
     | "completed"
     | "cancelled";
 
+  meetingLink?: string;
   review?: Review;
 }
