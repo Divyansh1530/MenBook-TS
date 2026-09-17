@@ -11,6 +11,7 @@
 [![Razorpay](https://img.shields.io/badge/Razorpay-02042B?style=flat&logo=razorpay&logoColor=3395FF)](https://razorpay.com/)
 
 ---
+<<<<<<< HEAD
 
 ## 📑 Table of Contents
 
@@ -32,6 +33,10 @@
 - [Author & License](#-author--license)
 
 ---
+=======
+<img width="1905" height="1078" alt="image" src="https://github.com/user-attachments/assets/4fcd2301-ed54-464b-84de-ba4039538af7" />
+
+>>>>>>> b566c59b0a43ef3def3fb2004c1abf3d8ed1c353
 
 ## 🌟 What is MenBook?
 
@@ -70,6 +75,7 @@ Instead of manual back-and-forth messaging to find a suitable time:
 
 ---
 
+<<<<<<< HEAD
 ## 🛡️ Role-Based Access Control (RBAC)
 
 MenBook implements clean **Role-Based Access Control (RBAC)** across the backend routes, database models, and frontend UI:
@@ -130,6 +136,8 @@ When a user adds, edits, or deletes a review:
 
 ---
 
+=======
+>>>>>>> b566c59b0a43ef3def3fb2004c1abf3d8ed1c353
 ## 💻 Tech Stack
 
 | Layer | Tools & Libraries |
@@ -152,8 +160,11 @@ When a user adds, edits, or deletes a review:
 * **Payment**: Payment records (`bookingId`, `orderId`, `paymentId`, `amount`, `status`, `signature`).
 * **Review**: Ratings (1 to 5) and feedback comments, with a unique index on `bookingId` so each session can only be reviewed once.
 
+<<<<<<< HEAD
 > 📊 ER Diagram: [View Architecture Model on Eraser.io](https://app.eraser.io/workspace/wt7YGkmdLGnjLg4enOzt?origin=share&diagram=mTs3fc9fwGOcEFx3zb_PC)
 
+=======
+>>>>>>> b566c59b0a43ef3def3fb2004c1abf3d8ed1c353
 ---
 
 ## 📁 Project Directory Structure
@@ -351,6 +362,7 @@ cd MenBook-TS
 
 ---
 
+<<<<<<< HEAD
 ## 💳 Testing Payments (Razorpay Sandbox)
 
 The app comes with a built-in helper modal for test payments. When booking a session, use these Razorpay test card credentials:
@@ -367,6 +379,8 @@ The app comes with a built-in helper modal for test payments. When booking a ses
 
 ---
 
+=======
+>>>>>>> b566c59b0a43ef3def3fb2004c1abf3d8ed1c353
 ## 👨‍💻 Author & License
 
 * **Developer**: [Divyansh](https://github.com/Divyansh1530)
