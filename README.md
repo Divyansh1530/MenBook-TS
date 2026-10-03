@@ -13,6 +13,9 @@
 
 <img width="1905" height="1078" alt="image" src="https://github.com/user-attachments/assets/4fcd2301-ed54-464b-84de-ba4039538af7" />
 
+<img width="1763" height="2218" alt="Screenshot_3-10-2026_17250_menbook vercel app" src="https://github.com/user-attachments/assets/47c32e2c-da22-4cff-bd39-4b3b54ba60f5" />
+
+
 
 ## 🌟 What is MenBook?
 
@@ -61,7 +64,7 @@ Instead of manual back-and-forth messaging to find a suitable time:
 | **Authentication** | JWT (Dual Access/Refresh Tokens), Passport.js Google OAuth 2.0, bcrypt |
 | **Payments** | Razorpay SDK (Order creation & HMAC-SHA256 signature verification) |
 | **Media Uploads**| Cloudinary SDK, Multer |
-| **Email & Links** | Nodemailer (Gmail SMTP), Jitsi Meet room links |
+| **Meeting Links**| Jitsi Meet room links |
 
 ---
 
@@ -87,7 +90,6 @@ MenBook-TS/
 │   │   ├── middlewares/               # JWT verification (RBAC) & Multer
 │   │   ├── models/                    # Mongoose schemas (User, Booking, Availability, Payment, Review)
 │   │   ├── routes/                    # Express route definitions
-│   │   ├── templates/email.ts         # Email notification templates
 │   │   ├── types/                     # Backend TypeScript types
 │   │   ├── utils/                     # Slot generator, Cloudinary, Razorpay, ApiError, ApiResponse
 │   │   ├── app.ts                     # Express app setup
@@ -218,9 +220,6 @@ cd MenBook-TS
    CLIENT_ID=your_google_client_id
    CLIENT_SECRET=your_google_client_secret
    CALLBACK_URL=http://localhost:8000/api/v1/users/auth/google/callback
-
-   EMAIL_USER=your_email@gmail.com
-   EMAIL_PASS=your_gmail_app_password
    ```
 
 5. Start the backend:
