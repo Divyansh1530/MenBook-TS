@@ -52,7 +52,7 @@ function Hero() {
           
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gray-300 bg-white/80 backdrop-blur-sm text-xs font-medium text-gray-500">
             <span className="w-1.5 h-1.5 rounded-full bg-red-400"></span>
-            Now with {mentorCount || '240'}+ vetted mentors
+            Now with {mentorCount}+ vetted mentors
           </div>
 
           <h1 className="hero-heading font-serif text-[37px] md:text-8xl text-[#1a1a1a] leading-[1.15] md:leading-[0.9] tracking-tighter transform scale-y-[1.2] origin-left">

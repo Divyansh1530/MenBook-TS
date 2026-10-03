@@ -241,7 +241,7 @@ function NavBar({
                 <div className='flex items-center gap-5'>
                   <Link
                     to="/signup"
-                    className='text-lg flex gap-1 items-center font-normal rounded-full py-1 text-black'
+                    className='text-lg py-1 font-medium text-gray-900  flex items-center gap-1 underline-offset-1'
                     onClick={() => setMenuOpen(false)}
                   >
                     <UserPlus size={18} className='text-gray-400'/>
