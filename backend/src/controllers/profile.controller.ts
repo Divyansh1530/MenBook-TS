@@ -185,9 +185,28 @@ const updateUserAvatar = asyncHandler(async(req,res) => {
     )
 })
 
+const removeUserAvatar = asyncHandler(async(req,res) => {
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set:{
+                avatar: ""
+            }
+        },
+        {new: true}
+    ).select("-password")
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(200, user, "Avatar image removed successfully")
+    )
+})
+
 export {
     changeCurrentPassword,
     updateAccountDetails,
     updateUserAvatar,
+    removeUserAvatar,
     getCurrentUser
 }

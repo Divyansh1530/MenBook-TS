@@ -10,7 +10,8 @@ import {
     changeCurrentPassword,
     getCurrentUser,
     updateAccountDetails,
-    updateUserAvatar
+    updateUserAvatar,
+    removeUserAvatar
 } from '../controllers/profile.controller.js'
 import {
     getAllMentors,
@@ -32,6 +33,7 @@ router.route("/change-password").patch(verifyJWT,changeCurrentPassword)
 router.route("/current-user").get(verifyJWT,getCurrentUser)
 router.route("/update-details").patch(verifyJWT,updateAccountDetails)
 router.route("/update-avatar").patch(verifyJWT,upload.single("avatar"),updateUserAvatar)
+router.route("/remove-avatar").delete(verifyJWT,removeUserAvatar)
 router.route("/mentors/:id").get(getSingleMentor)
 router.route("/mentors").get(getAllMentors)
 router.get(

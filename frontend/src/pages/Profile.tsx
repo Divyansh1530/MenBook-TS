@@ -8,7 +8,8 @@ import {
   FiAward, 
   FiFileText, 
   FiTag,
-  FiUser
+  FiUser,
+  FiTrash
 } from 'react-icons/fi';
 import api from '../api/axios';
 import { AxiosError } from 'axios';
@@ -118,6 +119,17 @@ function Profile() {
     } catch (error) {
       const err = error as AxiosError<{message:string}>;
       toast.error(err.response?.data?.message || 'Avatar update failed');
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    try {
+      await api.delete('/users/remove-avatar', { withCredentials: true });
+      toast.success('Avatar removed successfully');
+      fetchCurrentUser();
+    } catch (error) {
+      const err = error as AxiosError<{message:string}>;
+      toast.error(err.response?.data?.message || 'Failed to remove avatar');
     }
   };
 
@@ -240,6 +252,15 @@ function Profile() {
                        <span className="hero-heading tracking-tight font-serif text-4xl text-gray-400">{user!.name[0]}</span>
                    )}
                 </div>
+                {user!.avatar && (
+                  <button 
+                    onClick={handleRemoveAvatar}
+                    className="absolute bottom-1 left-1 bg-red-500 p-2 rounded-full cursor-pointer hover:scale-110 transition-all text-white shadow-lg"
+                    title="Remove avatar"
+                  >
+                    <FiTrash size={18} />
+                  </button>
+                )}
                 <label className="absolute bottom-1 right-1 bg-[#120f0a] p-2 rounded-full cursor-pointer hover:scale-110 transition-all text-white shadow-lg">
                     <FiCamera size={18} />
                     <input 

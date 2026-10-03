@@ -21,8 +21,8 @@ function Hero() {
         response.data.data.totalMentors
       )
 
-    } catch {
-        //
+    } catch (error) {
+        console.error("Failed to fetch mentors count:", error);
     }
   }
 

@@ -28,10 +28,10 @@ const generateAccessAndRefreshTokens = async(userId:string):Promise<TokenRespons
         accessToken,
         refreshToken
     }
-    } catch {
-        //
+    } catch (error) {
+        console.error("Token generation error:", error);
+        throw new ApiError(500, "Failed to generate tokens");
     }
-    throw new ApiError(500,"Failed to generate tokens")
 
 }
 

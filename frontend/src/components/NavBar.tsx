@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, LogOut, LayoutDashboard, User, Calendar } from 'lucide-react';
+import { Menu, X, LogOut, LayoutDashboard, User, Calendar, Contact, Info, Search, Home, LogIn, UserPlus } from 'lucide-react';
 import api from '../api/axios';
 import { AxiosError } from 'axios';
 import type { NavBarProps } from '../types/user';
@@ -169,8 +169,8 @@ function NavBar({
       {menuOpen && (
         <div className="md:hidden bg-[#fdfaf3] border-t border-black/5 p-6 space-y-4 pb-10">
           {user && (
-            <div className="flex items-center gap-3 mb-6 p-4 bg-white/40 rounded-3xl border border-black/5">
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-red-100 flex items-center justify-center">
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 rounded-full overflow-hidden bg-red-100 shrink-0 flex items-center justify-center">
                   {user.avatar ? (
                     <img
                       src={user.avatar}
@@ -183,9 +183,12 @@ function NavBar({
                     </span>
                   )}
                 </div>
-               <div>
-                  <p className="font-bold text-[#1a1a1a]">{user.name}</p>
-                  <p className="text-[10px] font-bold px-2 py-1 bg-red-50 text-red-400 rounded-md uppercase tracking-wider">{user.role}</p>
+               <div className="flex flex-col">
+                  <div className="flex items-center gap-2">
+                    <p className="font-bold text-[#1a1a1a] leading-tight">{user.name}</p>
+                    <span className="text-[10px] font-bold px-2 py-0.5 bg-red-50 text-red-400 rounded-md uppercase tracking-wider">{user.role}</span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-0.5">{user.email}</p>
                </div>
             </div>
           )}
@@ -206,48 +209,55 @@ function NavBar({
             <>
               <Link 
                 to="/" 
-                className="block text-lg font-medium text-gray-800" 
+                className="text-lg font-medium text-gray-800 flex items-center gap-1" 
                 onClick={() => setMenuOpen(false)}>
-                Home
+                <Home size={18} className='text-gray-400'/>
+                <span>Home</span>
               </Link>
               <Link 
                 to="/browse-mentors" 
-                className="block text-lg font-medium text-gray-800" 
+                className="text-lg font-medium text-gray-800 flex items-center gap-1" 
                 onClick={() => setMenuOpen(false)}>
-                Browse Mentors
+                <Search size={18} className='text-gray-400'/>
+                <span>Browse Mentors</span>
               </Link>
               
-              {!user && (
-                <div className='flex items-center gap-5'>
-                  <Link
-                    to="/login"
-                    className='text-lg py-1 font-medium text-gray-900'
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/signup"
-                    className='text-md flex items-center font-normal bg-black rounded-full px-4 py-2 text-white'
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    Signup
-                  </Link>
-                </div>
-              )}
-
               <Link 
                 to="/about" 
-                className="block text-lg font-medium text-gray-800" 
+                className="text-lg font-medium text-gray-800 flex items-center gap-1" 
                 onClick={() => setMenuOpen(false)}>
-                About
+                <Info size={18} className='text-gray-400' />
+                <span>About</span>
               </Link>
               <Link 
                 to="/contact" 
-                className="block text-lg font-medium text-gray-800" 
+                className="text-lg font-medium text-gray-800 flex items-center gap-1" 
                 onClick={() => setMenuOpen(false)}>
-                Contact
+                <Contact size={18} className='text-gray-400'/>
+                <span>Contact</span>
               </Link>
+
+              {!user && (
+                <div className='flex items-center gap-5'>
+                  <Link
+                    to="/signup"
+                    className='text-lg flex gap-1 items-center font-normal rounded-full py-1 text-black'
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <UserPlus size={18} className='text-gray-400'/>
+                    <span>Signup</span>
+                  </Link>
+                  <Link
+                    to="/login"
+                    className='text-lg py-1 font-medium text-gray-900  flex items-center gap-1 underline-offset-1'
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    <LogIn size={18} className='text-gray-400' />
+                    <span>Login</span>
+                  </Link>
+                  
+                </div>
+              )}
 
               {user && (
                 <>

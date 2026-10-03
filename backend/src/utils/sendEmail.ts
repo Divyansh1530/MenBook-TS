@@ -5,28 +5,29 @@ const transporter = nodemailer.createTransport({
     service: "gmail",
 
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        user: "div09702@gmail.com", // MUST authenticate with primary account
+        pass: process.env.EMAIL_PASS?.replace(/\s/g, "")
     }
 })
 
 interface SendEmailOptions {
-    to:string;
-    subject:string;
-    html:string;
+    to: string;
+    subject: string;
+    html: string;
 }
 
 const sendEmail = async ({
     to,
     subject,
     html
-}:SendEmailOptions) => {
+}: SendEmailOptions) => {
 
     try {
 
         await transporter.sendMail({
+            from: '"MenBook" <menbook.mail@gmail.com>',
 
-            from: process.env.EMAIL_USER!,
+            replyTo: "menbook.mail@gmail.com",
 
             to,
 
@@ -35,7 +36,7 @@ const sendEmail = async ({
             html
         })
 
-    } catch  {
+    } catch {
         //
     }
 }

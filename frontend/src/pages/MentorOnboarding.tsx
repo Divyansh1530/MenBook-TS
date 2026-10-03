@@ -47,8 +47,8 @@ function MentorOnboarding({
                 }
             )
             setUser(response.data.data)
-        }catch{
-           //
+        }catch(error){
+           console.error("Failed to fetch user:", error);
         }finally{
             setLoading(false)
         }

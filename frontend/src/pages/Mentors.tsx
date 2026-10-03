@@ -172,8 +172,9 @@ function Mentors({
         theme: { color: '#e94e36' }
       };
       new window.Razorpay(options).open();
-    } catch {
-      //
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to initiate booking');
     }
   };
 
